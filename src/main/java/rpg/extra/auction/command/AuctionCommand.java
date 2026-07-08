@@ -69,7 +69,7 @@ public final class AuctionCommand implements CommandExecutor {
                         collected++;
                     }
                 }
-                sender.sendMessage(ChatColor.GREEN + collected + "件の未売却アイテムを回収しました。");
+                sender.sendMessage(ChatColor.GREEN + (collected + "件の未売却アイテムを回収しました。"));
             }
             default -> sender.sendMessage(ChatColor.YELLOW + "Usage: /auction [list|sell <price>|collect]");
         }

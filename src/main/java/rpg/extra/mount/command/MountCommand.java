@@ -66,7 +66,7 @@ public final class MountCommand implements CommandExecutor {
         all.values().forEach(mount -> {
             boolean owned = unlocked.contains(mount.getId());
             sender.sendMessage(ChatColor.GRAY + "- " + mount.getId() + " (" + mount.getName() + ") "
-                    + (owned ? ChatColor.GREEN + "所持済み" : ChatColor.GOLD + mount.getPrice() + "G"));
+                    + (owned ? ChatColor.GREEN + "所持済み" : ChatColor.GOLD + (mount.getPrice() + "G")));
         });
     }
 

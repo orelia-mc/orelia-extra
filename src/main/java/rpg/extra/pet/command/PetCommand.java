@@ -66,7 +66,7 @@ public final class PetCommand implements CommandExecutor {
         all.values().forEach(pet -> {
             boolean owned = unlocked.contains(pet.getId());
             sender.sendMessage(ChatColor.GRAY + "- " + pet.getId() + " (" + pet.getName() + ") "
-                    + (owned ? ChatColor.GREEN + "所持済み" : ChatColor.GOLD + pet.getPrice() + "G"));
+                    + (owned ? ChatColor.GREEN + "所持済み" : ChatColor.GOLD + (pet.getPrice() + "G")));
         });
     }
 
