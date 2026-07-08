@@ -1,0 +1,6 @@
+# Orelia Extra configuration.
+# Reload with: /rpgextraadmin reload
+#
+# No modules are implemented yet (Party/Guild/Trade/Mail/Auction/Housing/Pet/Mount/
+# Ranking/Achievement - added later as needed). This file exists so the config-loading
+# plumbing is already wired for whichever module lands here first.

@@ -1,0 +1,19 @@
+name: OreliaExtra
+version: '${version}'
+main: rpg.extra.core.OreliaExtraPlugin
+api-version: '1.21'
+author: rasp1220
+description: Orelia later-MMORPG-feature plugin (Party, Guild, Trade, Mail, Auction, Housing, Pet, Mount, Ranking, Achievement) - no modules implemented yet
+folia-supported: false
+depend: [OreliaCore]
+softdepend: [OreliaWorld, Vault]
+
+commands:
+  rpgextraadmin:
+    description: Administrative commands for Orelia Extra
+    usage: /rpgextraadmin <reload|...> ...
+    permission: orelia.extra.admin
+
+permissions:
+  orelia.extra.admin:
+    default: op
