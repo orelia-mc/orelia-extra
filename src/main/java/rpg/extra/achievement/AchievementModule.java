@@ -1,0 +1,90 @@
+package rpg.extra.achievement;
+
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.configuration.file.YamlConfiguration;
+import rpg.api.SkillApi;
+import rpg.api.StatusApi;
+import rpg.database.manager.DatabaseManager;
+import rpg.extra.achievement.command.AchievementCommand;
+import rpg.extra.achievement.listener.AchievementJoinListener;
+import rpg.extra.achievement.repository.AchievementConfigRepository;
+import rpg.extra.achievement.repository.AchievementProgressRepository;
+import rpg.extra.achievement.service.AchievementService;
+import rpg.extra.core.OreliaExtraPlugin;
+import rpg.extra.core.module.ExtraModule;
+import rpg.world.api.QuestApi;
+
+import java.util.logging.Level;
+
+/**
+ * Achievement module: config-driven achievements checked periodically against status/quest/
+ * money conditions, with skill-point rewards (SOW AchievementModule).
+ */
+public final class AchievementModule implements ExtraModule {
+
+    private static final long CHECK_PERIOD_TICKS = 20L * 30;
+
+    private final AchievementConfigRepository configRepository = new AchievementConfigRepository();
+    private AchievementService achievementService;
+    private OreliaExtraPlugin plugin;
+
+    @Override
+    public String getName() {
+        return "achievement";
+    }
+
+    @Override
+    public void onEnable(OreliaExtraPlugin plugin) {
+        this.plugin = plugin;
+        DatabaseManager databaseManager = plugin.getServer().getServicesManager().load(DatabaseManager.class);
+        if (databaseManager == null) {
+            throw new IllegalStateException("achievement module requires OreliaCore's DatabaseManager");
+        }
+        StatusApi statusApi = plugin.getServer().getServicesManager().load(StatusApi.class);
+        if (statusApi == null) {
+            throw new IllegalStateException("achievement module requires OreliaCore's StatusApi");
+        }
+        SkillApi skillApi = plugin.getServer().getServicesManager().load(SkillApi.class);
+        if (skillApi == null) {
+            throw new IllegalStateException("achievement module requires OreliaCore's SkillApi");
+        }
+        Economy economy = plugin.getServer().getServicesManager().load(Economy.class);
+        QuestApi questApi = plugin.getServer().getServicesManager().load(QuestApi.class);
+
+        reloadAchievements();
+
+        AchievementProgressRepository progressRepository = new AchievementProgressRepository(databaseManager);
+        try {
+            progressRepository.createSchemaIfNotExists();
+        } catch (Exception e) {
+            plugin.getLogger().log(Level.SEVERE, "Failed to initialize achievement schema", e);
+        }
+
+        this.achievementService = new AchievementService(configRepository, progressRepository, statusApi, skillApi, economy, questApi);
+        achievementService.loadAll();
+
+        plugin.getServer().getPluginManager().registerEvents(new AchievementJoinListener(achievementService), plugin);
+        plugin.getCommand("achievement").setExecutor(new AchievementCommand(achievementService));
+
+        plugin.getSchedulerService().runTimer(achievementService::checkAll, CHECK_PERIOD_TICKS, CHECK_PERIOD_TICKS);
+    }
+
+    @Override
+    public void onDisable() {
+    }
+
+    @Override
+    public void onReload() {
+        reloadAchievements();
+    }
+
+    private void reloadAchievements() {
+        plugin.getConfigManager().register("achievements.yml");
+        YamlConfiguration config = plugin.getConfigManager().get("achievements.yml").get();
+        configRepository.load(config);
+    }
+
+    public AchievementService getAchievementService() {
+        return achievementService;
+    }
+}

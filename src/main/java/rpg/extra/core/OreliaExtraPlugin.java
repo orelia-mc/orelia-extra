@@ -5,18 +5,28 @@ import org.bukkit.plugin.java.JavaPlugin;
 import rpg.core.config.ConfigManager;
 import rpg.core.player.PlayerDataManager;
 import rpg.core.scheduler.SchedulerService;
+import rpg.extra.achievement.AchievementModule;
+import rpg.extra.auction.AuctionModule;
 import rpg.extra.core.command.ExtraAdminCommand;
 import rpg.extra.core.module.ExtraModuleManager;
+import rpg.extra.guild.GuildModule;
+import rpg.extra.housing.HousingModule;
+import rpg.extra.mail.MailModule;
+import rpg.extra.mount.MountModule;
+import rpg.extra.party.PartyModule;
+import rpg.extra.pet.PetModule;
+import rpg.extra.ranking.RankingModule;
+import rpg.extra.trade.TradeModule;
 
 /**
  * Plugin entry point for the orelia-extra repo/jar: later MMORPG features (Party, Guild,
  * Trade, Mail, Auction, Housing, Pet, Mount, Ranking, Achievement). Requires OreliaCore;
- * OreliaWorld is a soft dependency for modules that end up needing quest/story/dialogue
- * integration once they exist.
+ * OreliaWorld is a soft dependency used only by AchievementModule's optional COMPLETE_QUEST
+ * condition.
  *
- * <p>No modules are registered yet - this is intentionally just the bootstrap, ready for
- * the first orelia-extra module to be added the same way orelia-core/orelia-world modules
- * are (implement {@code ExtraModule}, register it in {@link #onEnable()}).
+ * <p>Modules with no dependency on each other register in roughly alphabetical order;
+ * Ranking/Achievement register last since they read state produced by the others (or by
+ * OreliaCore/OreliaWorld directly) rather than owning anything themselves.
  */
 public final class OreliaExtraPlugin extends JavaPlugin {
 
@@ -49,11 +59,17 @@ public final class OreliaExtraPlugin extends JavaPlugin {
 
         getCommand("rpgextraadmin").setExecutor(new ExtraAdminCommand(this));
 
-        // No modules registered yet - see class Javadoc.
+        moduleManager.register(new PartyModule());
+        moduleManager.register(new GuildModule());
+        moduleManager.register(new TradeModule());
+        moduleManager.register(new MailModule());
+        moduleManager.register(new AuctionModule());
+        moduleManager.register(new HousingModule());
+        moduleManager.register(new PetModule());
+        moduleManager.register(new MountModule());
+        moduleManager.register(new RankingModule());
+        moduleManager.register(new AchievementModule());
         moduleManager.enableAll();
-
-        getLogger().info("OreliaExtra is enabled but currently has no modules registered. "
-                + "Add Party/Guild/Trade/... modules here as they are implemented.");
     }
 
     @Override

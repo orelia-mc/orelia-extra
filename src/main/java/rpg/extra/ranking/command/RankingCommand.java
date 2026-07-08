@@ -1,0 +1,32 @@
+package rpg.extra.ranking.command;
+
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import rpg.extra.ranking.gui.RankingGuiScreen;
+import rpg.gui.framework.GuiManager;
+
+/**
+ * {@code /ranking} opens the level leaderboard GUI (SOW RankingModule).
+ */
+public final class RankingCommand implements CommandExecutor {
+
+    private final RankingGuiScreen guiScreen;
+    private final GuiManager guiManager;
+
+    public RankingCommand(RankingGuiScreen guiScreen, GuiManager guiManager) {
+        this.guiScreen = guiScreen;
+        this.guiManager = guiManager;
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("Players only.");
+            return true;
+        }
+        guiManager.open(player, guiScreen.build());
+        return true;
+    }
+}

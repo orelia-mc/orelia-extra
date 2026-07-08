@@ -1,6 +1,8 @@
 # Orelia Extra configuration.
 # Reload with: /rpgextraadmin reload
 #
-# No modules are implemented yet (Party/Guild/Trade/Mail/Auction/Housing/Pet/Mount/
-# Ranking/Achievement - added later as needed). This file exists so the config-loading
-# plumbing is already wired for whichever module lands here first.
+# Module-specific config lives in its own file (housing.yml, pets.yml, mounts.yml,
+# achievements.yml). This file is for cross-module or plugin-wide settings.
+
+party:
+  max-size: 6

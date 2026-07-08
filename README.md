@@ -9,12 +9,20 @@ Part of the Orelia 3-plugin split:
 - [orelia-world](https://github.com/rasp1220/orelia-world) - quest/NPC/story content layer (soft dependency)
 - **orelia-extra** (this repo) - later MMORPG features
 
-**No modules are implemented yet** - this repo is the bootstrap scaffold (build config,
-`OreliaExtraPlugin` main class, `ExtraModule`/`ExtraModuleManager` lifecycle plumbing)
-ready to receive Party/Guild/Trade/... modules as they're built, following the same
-pattern as orelia-core/orelia-world: one `ExtraModule` per feature, registered in
+All 10 modules are implemented, each as an `ExtraModule` registered in
 `OreliaExtraPlugin#onEnable`, talking to orelia-core/orelia-world only through their
-published `rpg.api` interfaces.
+published `rpg.api`/`rpg.world.api` interfaces (never gameplay-module internals):
+
+- **Party** (`/party`) - in-memory party grouping (create/invite/accept/leave/kick/disband)
+- **Guild** (`/guild`) - DB-persisted guilds with leader/officer/member roles
+- **Trade** (`/trade`) - two-player item trading with a confirm/confirm handshake
+- **Mail** (`/mail`) - DB-persisted mailbox with item attachments, GUI inbox
+- **Auction** (`/auction`) - player-run auction house with timed listings, settles via Vault
+- **Housing** (`/house`) - config-driven purchasable house plots with `/house home` teleport
+- **Pet** (`/pet`) - config-driven follower pets (unlock/summon/dismiss)
+- **Mount** (`/mount`) - config-driven rideable mounts (unlock/summon/dismiss)
+- **Ranking** (`/ranking`) - level leaderboard GUI, reads orelia-core's `StatusApi` directly
+- **Achievement** (`/achievement`) - config-driven achievements (level/quest/money conditions), rewards via `SkillApi`
 
 ## Building
 
