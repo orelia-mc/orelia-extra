@@ -22,7 +22,11 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
-    compileOnly("com.github.MilkBowl:VaultAPI:1.7")
+    // VaultAPI's POM pulls in an old org.bukkit:bukkit:1.13.1 as a transitive dependency,
+    // which conflicts with the org.bukkit:bukkit capability paper-api provides - exclude it.
+    compileOnly("com.github.MilkBowl:VaultAPI:1.7") {
+        exclude(group = "org.bukkit", module = "bukkit")
+    }
 
     // orelia-extra only ever calls into orelia-core/orelia-world through their published
     // rpg.api interfaces (Bukkit ServicesManager) or generic rpg.core.* infrastructure -
