@@ -13,6 +13,7 @@ commands:
     description: Administrative commands for Orelia Extra
     usage: /rpgextraadmin <reload|...> ...
     permission: orelia.extra.admin
+    permission-message: "&c権限がありません。このコマンドは運営(OP)専用です。"
   party:
     description: Manage your party
     usage: /party <create|invite|accept|leave|kick|disband|list>
