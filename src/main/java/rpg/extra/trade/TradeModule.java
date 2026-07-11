@@ -24,7 +24,7 @@ public final class TradeModule implements ExtraModule {
     public void onEnable(OreliaExtraPlugin plugin) {
         this.tradeService = new TradeService(manager);
         plugin.getServer().getPluginManager().registerEvents(new TradeQuitListener(tradeService), plugin);
-        plugin.getCommand("trade").setExecutor(new TradeCommand(tradeService));
+        plugin.getPlayerCommandRegistry().register("trade", new TradeCommand(tradeService));
     }
 
     @Override

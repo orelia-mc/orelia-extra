@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * {@code /pet [list|buy <id>|summon [id]|dismiss]} (SOW PetModule).
+ * {@code /ol pet [list|buy <id>|summon [id]|dismiss]} (SOW PetModule).
  */
 public final class PetCommand implements CommandExecutor {
 
@@ -36,7 +36,7 @@ public final class PetCommand implements CommandExecutor {
         switch (args[0].toLowerCase()) {
             case "buy" -> {
                 if (args.length < 2) {
-                    sender.sendMessage(ChatColor.YELLOW + "Usage: /pet buy <id>");
+                    sender.sendMessage(ChatColor.YELLOW + "Usage: /ol pet buy <id>");
                     return true;
                 }
                 report(sender, petService.unlock(player, args[1]));
@@ -44,13 +44,13 @@ public final class PetCommand implements CommandExecutor {
             case "summon" -> {
                 String petId = args.length >= 2 ? args[1] : petService.getSelectedPetId(player.getUniqueId());
                 if (petId == null) {
-                    sender.sendMessage(ChatColor.YELLOW + "Usage: /pet summon <id>");
+                    sender.sendMessage(ChatColor.YELLOW + "Usage: /ol pet summon <id>");
                     return true;
                 }
                 report(sender, petService.summon(player, petId));
             }
             case "dismiss" -> report(sender, petService.dismiss(player));
-            default -> sender.sendMessage(ChatColor.YELLOW + "Usage: /pet [list|buy <id>|summon [id]|dismiss]");
+            default -> sender.sendMessage(ChatColor.YELLOW + "Usage: /ol pet [list|buy <id>|summon [id]|dismiss]");
         }
         return true;
     }

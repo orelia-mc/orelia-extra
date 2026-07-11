@@ -27,7 +27,7 @@ public final class PartyModule implements ExtraModule {
         this.partyService = new PartyService(manager, maxPartySize);
 
         plugin.getServer().getPluginManager().registerEvents(new PartyQuitListener(manager), plugin);
-        plugin.getCommand("party").setExecutor(new PartyCommand(partyService));
+        plugin.getPlayerCommandRegistry().register("party", new PartyCommand(partyService));
     }
 
     @Override

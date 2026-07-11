@@ -1,5 +1,5 @@
 # Orelia Extra configuration.
-# Reload with: /rpgextraadmin reload
+# Reload with: /oladmin extrareload
 #
 # Module-specific config lives in its own file (housing.yml, pets.yml, mounts.yml,
 # achievements.yml). This file is for cross-module or plugin-wide settings.

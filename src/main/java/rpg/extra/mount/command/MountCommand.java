@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * {@code /mount [list|buy <id>|summon [id]|dismiss]} (SOW MountModule).
+ * {@code /ol mount [list|buy <id>|summon [id]|dismiss]} (SOW MountModule).
  */
 public final class MountCommand implements CommandExecutor {
 
@@ -36,7 +36,7 @@ public final class MountCommand implements CommandExecutor {
         switch (args[0].toLowerCase()) {
             case "buy" -> {
                 if (args.length < 2) {
-                    sender.sendMessage(ChatColor.YELLOW + "Usage: /mount buy <id>");
+                    sender.sendMessage(ChatColor.YELLOW + "Usage: /ol mount buy <id>");
                     return true;
                 }
                 report(sender, mountService.unlock(player, args[1]));
@@ -44,13 +44,13 @@ public final class MountCommand implements CommandExecutor {
             case "summon" -> {
                 String mountId = args.length >= 2 ? args[1] : mountService.getSelectedMountId(player.getUniqueId());
                 if (mountId == null) {
-                    sender.sendMessage(ChatColor.YELLOW + "Usage: /mount summon <id>");
+                    sender.sendMessage(ChatColor.YELLOW + "Usage: /ol mount summon <id>");
                     return true;
                 }
                 report(sender, mountService.summon(player, mountId));
             }
             case "dismiss" -> report(sender, mountService.dismiss(player));
-            default -> sender.sendMessage(ChatColor.YELLOW + "Usage: /mount [list|buy <id>|summon [id]|dismiss]");
+            default -> sender.sendMessage(ChatColor.YELLOW + "Usage: /ol mount [list|buy <id>|summon [id]|dismiss]");
         }
         return true;
     }

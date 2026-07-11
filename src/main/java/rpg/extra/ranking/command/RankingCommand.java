@@ -8,7 +8,7 @@ import rpg.extra.ranking.gui.RankingGuiScreen;
 import rpg.gui.framework.GuiManager;
 
 /**
- * {@code /ranking} opens the level leaderboard GUI (SOW RankingModule).
+ * {@code /ol ranking} opens the level leaderboard GUI (SOW RankingModule).
  */
 public final class RankingCommand implements CommandExecutor {
 

@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * {@code /achievement} lists every achievement and whether the player has unlocked it (SOW
+ * {@code /ol achievement} lists every achievement and whether the player has unlocked it (SOW
  * AchievementModule).
  */
 public final class AchievementCommand implements CommandExecutor {

@@ -44,7 +44,7 @@ public final class GuildModule implements ExtraModule {
         this.guildService = new GuildService(manager);
 
         plugin.getServer().getPluginManager().registerEvents(new GuildQuitListener(manager), plugin);
-        plugin.getCommand("guild").setExecutor(new GuildCommand(guildService));
+        plugin.getPlayerCommandRegistry().register("guild", new GuildCommand(guildService));
     }
 
     @Override

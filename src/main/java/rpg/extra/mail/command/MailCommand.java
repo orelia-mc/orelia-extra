@@ -10,7 +10,7 @@ import rpg.extra.mail.service.MailService;
 import rpg.gui.framework.GuiManager;
 
 /**
- * {@code /mail} opens the mailbox GUI (SOW MailModule).
+ * {@code /ol mail} opens the mailbox GUI (SOW MailModule).
  */
 public final class MailCommand implements CommandExecutor {
 

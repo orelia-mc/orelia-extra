@@ -13,7 +13,7 @@ import rpg.extra.housing.service.HousingService;
 import java.util.logging.Level;
 
 /**
- * Housing module: config-driven purchasable house plots with a {@code /house home} teleport
+ * Housing module: config-driven purchasable house plots with a {@code /ol house home} teleport
  * (SOW HousingModule). Money settles through Vault's {@link Economy}.
  */
 public final class HousingModule implements ExtraModule {
@@ -51,7 +51,7 @@ public final class HousingModule implements ExtraModule {
         this.housingService = new HousingService(plotRepository, ownershipRepository, economy);
         housingService.loadAll();
 
-        plugin.getCommand("house").setExecutor(new HousingCommand(housingService));
+        plugin.getPlayerCommandRegistry().register("house", new HousingCommand(housingService));
     }
 
     @Override

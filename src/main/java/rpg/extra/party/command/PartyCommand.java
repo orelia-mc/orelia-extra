@@ -10,7 +10,7 @@ import rpg.extra.party.model.Party;
 import rpg.extra.party.service.PartyService;
 
 /**
- * {@code /party create|invite|accept|leave|kick|disband|list} (SOW PartyModule).
+ * {@code /ol party create|invite|accept|leave|kick|disband|list} (SOW PartyModule).
  */
 public final class PartyCommand implements CommandExecutor {
 
@@ -27,7 +27,7 @@ public final class PartyCommand implements CommandExecutor {
             return true;
         }
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.YELLOW + "Usage: /party <create|invite|accept|leave|kick|disband|list>");
+            sender.sendMessage(ChatColor.YELLOW + "Usage: /ol party <create|invite|accept|leave|kick|disband|list>");
             return true;
         }
 
@@ -35,7 +35,7 @@ public final class PartyCommand implements CommandExecutor {
             case "create" -> report(sender, partyService.create(player), "パーティーを作成しました。");
             case "invite" -> {
                 if (args.length < 2) {
-                    sender.sendMessage(ChatColor.YELLOW + "Usage: /party invite <player>");
+                    sender.sendMessage(ChatColor.YELLOW + "Usage: /ol party invite <player>");
                     return true;
                 }
                 Player target = Bukkit.getPlayerExact(args[1]);
@@ -46,14 +46,14 @@ public final class PartyCommand implements CommandExecutor {
                 PartyService.ActionResult result = partyService.invite(player, target);
                 report(sender, result, "招待を送りました。");
                 if (result == PartyService.ActionResult.OK) {
-                    target.sendMessage(ChatColor.GREEN + player.getName() + "からパーティー招待が届きました。/party accept で参加できます。");
+                    target.sendMessage(ChatColor.GREEN + player.getName() + "からパーティー招待が届きました。/ol party accept で参加できます。");
                 }
             }
             case "accept" -> report(sender, partyService.accept(player), "パーティーに参加しました。");
             case "leave" -> report(sender, partyService.leave(player), "パーティーを抜けました。");
             case "kick" -> {
                 if (args.length < 2) {
-                    sender.sendMessage(ChatColor.YELLOW + "Usage: /party kick <player>");
+                    sender.sendMessage(ChatColor.YELLOW + "Usage: /ol party kick <player>");
                     return true;
                 }
                 Player target = Bukkit.getPlayerExact(args[1]);
@@ -65,7 +65,7 @@ public final class PartyCommand implements CommandExecutor {
             }
             case "disband" -> report(sender, partyService.disband(player), "パーティーを解散しました。");
             case "list" -> listMembers(sender, player);
-            default -> sender.sendMessage(ChatColor.YELLOW + "Usage: /party <create|invite|accept|leave|kick|disband|list>");
+            default -> sender.sendMessage(ChatColor.YELLOW + "Usage: /ol party <create|invite|accept|leave|kick|disband|list>");
         }
         return true;
     }

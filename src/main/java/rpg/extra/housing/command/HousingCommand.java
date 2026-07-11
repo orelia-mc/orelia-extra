@@ -11,7 +11,7 @@ import rpg.extra.housing.service.HousingService;
 import java.util.Map;
 
 /**
- * {@code /house [list|buy <plotId>|home]} (SOW HousingModule).
+ * {@code /ol house [list|buy <plotId>|home]} (SOW HousingModule).
  */
 public final class HousingCommand implements CommandExecutor {
 
@@ -28,7 +28,7 @@ public final class HousingCommand implements CommandExecutor {
             return true;
         }
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.YELLOW + "Usage: /house [list|buy <plotId>|home]");
+            sender.sendMessage(ChatColor.YELLOW + "Usage: /ol house [list|buy <plotId>|home]");
             return true;
         }
 
@@ -45,13 +45,13 @@ public final class HousingCommand implements CommandExecutor {
             }
             case "buy" -> {
                 if (args.length < 2) {
-                    sender.sendMessage(ChatColor.YELLOW + "Usage: /house buy <plotId>");
+                    sender.sendMessage(ChatColor.YELLOW + "Usage: /ol house buy <plotId>");
                     return true;
                 }
                 report(sender, housingService.purchase(player, args[1]));
             }
             case "home" -> report(sender, housingService.teleportHome(player));
-            default -> sender.sendMessage(ChatColor.YELLOW + "Usage: /house [list|buy <plotId>|home]");
+            default -> sender.sendMessage(ChatColor.YELLOW + "Usage: /ol house [list|buy <plotId>|home]");
         }
         return true;
     }
@@ -66,7 +66,7 @@ public final class HousingCommand implements CommandExecutor {
             case PLOT_TAKEN -> "その土地は既に購入されています。";
             case ALREADY_OWN_A_HOUSE -> "既に自宅を所有しています。";
             case INSUFFICIENT_FUNDS -> "所持金が足りません。";
-            case NO_HOUSE -> "自宅を所有していません。/house list で購入できます。";
+            case NO_HOUSE -> "自宅を所有していません。/ol house list で購入できます。";
             case WORLD_NOT_FOUND -> "自宅のワールドが見つかりません。";
             case OK -> "OK";
         };

@@ -11,7 +11,7 @@ import rpg.extra.guild.model.GuildRole;
 import rpg.extra.guild.service.GuildService;
 
 /**
- * {@code /guild create|invite|accept|leave|kick|promote|demote|disband|info} (SOW GuildModule).
+ * {@code /ol guild create|invite|accept|leave|kick|promote|demote|disband|info} (SOW GuildModule).
  */
 public final class GuildCommand implements CommandExecutor {
 
@@ -28,14 +28,14 @@ public final class GuildCommand implements CommandExecutor {
             return true;
         }
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.YELLOW + "Usage: /guild <create|invite|accept|leave|kick|promote|demote|disband|info>");
+            sender.sendMessage(ChatColor.YELLOW + "Usage: /ol guild <create|invite|accept|leave|kick|promote|demote|disband|info>");
             return true;
         }
 
         switch (args[0].toLowerCase()) {
             case "create" -> {
                 if (args.length < 3) {
-                    sender.sendMessage(ChatColor.YELLOW + "Usage: /guild create <name> <tag>");
+                    sender.sendMessage(ChatColor.YELLOW + "Usage: /ol guild create <name> <tag>");
                     return true;
                 }
                 report(sender, guildService.create(player, args[1], args[2]), "ギルドを作成しました。");
@@ -44,7 +44,7 @@ public final class GuildCommand implements CommandExecutor {
                 GuildService.ActionResult result = guildService.invite(player, target);
                 report(sender, result, "招待を送りました。");
                 if (result == GuildService.ActionResult.OK) {
-                    target.sendMessage(ChatColor.GREEN + player.getName() + "からギルド招待が届きました。/guild accept で参加できます。");
+                    target.sendMessage(ChatColor.GREEN + player.getName() + "からギルド招待が届きました。/ol guild accept で参加できます。");
                 }
             });
             case "accept" -> report(sender, guildService.accept(player), "ギルドに参加しました。");
@@ -57,14 +57,14 @@ public final class GuildCommand implements CommandExecutor {
                     report(sender, guildService.setRole(player, target.getUniqueId(), GuildRole.MEMBER), "降格させました。"));
             case "disband" -> report(sender, guildService.disband(player), "ギルドを解散しました。");
             case "info" -> showInfo(sender, player);
-            default -> sender.sendMessage(ChatColor.YELLOW + "Usage: /guild <create|invite|accept|leave|kick|promote|demote|disband|info>");
+            default -> sender.sendMessage(ChatColor.YELLOW + "Usage: /ol guild <create|invite|accept|leave|kick|promote|demote|disband|info>");
         }
         return true;
     }
 
     private void withTarget(CommandSender sender, Player player, String[] args, java.util.function.Consumer<Player> action) {
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.YELLOW + "Usage: /guild " + args[0] + " <player>");
+            sender.sendMessage(ChatColor.YELLOW + "Usage: /ol guild " + args[0] + " <player>");
             return;
         }
         Player target = Bukkit.getPlayerExact(args[1]);

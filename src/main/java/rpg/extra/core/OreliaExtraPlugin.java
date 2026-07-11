@@ -2,6 +2,8 @@ package rpg.extra.core;
 
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import rpg.core.command.AdminCommandRegistry;
+import rpg.core.command.PlayerCommandRegistry;
 import rpg.core.config.ConfigManager;
 import rpg.core.player.PlayerDataManager;
 import rpg.core.scheduler.SchedulerService;
@@ -35,6 +37,7 @@ public final class OreliaExtraPlugin extends JavaPlugin {
     private ConfigManager configManager;
     private SchedulerService schedulerService;
     private PlayerDataManager playerDataManager;
+    private PlayerCommandRegistry playerCommandRegistry;
     private ExtraModuleManager moduleManager;
 
     @Override
@@ -51,13 +54,25 @@ public final class OreliaExtraPlugin extends JavaPlugin {
         }
         this.playerDataManager = registration.getProvider();
 
+        RegisteredServiceProvider<PlayerCommandRegistry> playerCommandRegistration =
+                getServer().getServicesManager().getRegistration(PlayerCommandRegistry.class);
+        RegisteredServiceProvider<AdminCommandRegistry> adminCommandRegistration =
+                getServer().getServicesManager().getRegistration(AdminCommandRegistry.class);
+        if (playerCommandRegistration == null || adminCommandRegistration == null) {
+            getLogger().severe("OreliaCore's command registries were not found. "
+                    + "Is OreliaCore installed and enabled before OreliaExtra?");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        this.playerCommandRegistry = playerCommandRegistration.getProvider();
+
         this.configManager = new ConfigManager(this);
         this.configManager.register("config.yml");
 
         this.schedulerService = new SchedulerService(this);
         this.moduleManager = new ExtraModuleManager(this);
 
-        getCommand("rpgextraadmin").setExecutor(new ExtraAdminCommand(this));
+        adminCommandRegistration.getProvider().register("extrareload", new ExtraAdminCommand(this));
 
         moduleManager.register(new PartyModule());
         moduleManager.register(new GuildModule());
@@ -103,5 +118,9 @@ public final class OreliaExtraPlugin extends JavaPlugin {
 
     public ExtraModuleManager getModuleManager() {
         return moduleManager;
+    }
+
+    public PlayerCommandRegistry getPlayerCommandRegistry() {
+        return playerCommandRegistry;
     }
 }

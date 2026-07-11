@@ -13,16 +13,16 @@ All 10 modules are implemented, each as an `ExtraModule` registered in
 `OreliaExtraPlugin#onEnable`, talking to orelia-core/orelia-world only through their
 published `rpg.api`/`rpg.world.api` interfaces (never gameplay-module internals):
 
-- **Party** (`/party`) - in-memory party grouping (create/invite/accept/leave/kick/disband)
-- **Guild** (`/guild`) - DB-persisted guilds with leader/officer/member roles
-- **Trade** (`/trade`) - two-player item trading with a confirm/confirm handshake
-- **Mail** (`/mail`) - DB-persisted mailbox with item attachments, GUI inbox
-- **Auction** (`/auction`) - player-run auction house with timed listings, settles via Vault
-- **Housing** (`/house`) - config-driven purchasable house plots with `/house home` teleport
-- **Pet** (`/pet`) - config-driven follower pets (unlock/summon/dismiss)
-- **Mount** (`/mount`) - config-driven rideable mounts (unlock/summon/dismiss)
-- **Ranking** (`/ranking`) - level leaderboard GUI, reads orelia-core's `StatusApi` directly
-- **Achievement** (`/achievement`) - config-driven achievements (level/quest/money conditions), rewards via `SkillApi`
+- **Party** (`/ol party`) - in-memory party grouping (create/invite/accept/leave/kick/disband)
+- **Guild** (`/ol guild`) - DB-persisted guilds with leader/officer/member roles
+- **Trade** (`/ol trade`) - two-player item trading with a confirm/confirm handshake
+- **Mail** (`/ol mail`) - DB-persisted mailbox with item attachments, GUI inbox
+- **Auction** (`/ol auction`) - player-run auction house with timed listings, settles via Vault
+- **Housing** (`/ol house`) - config-driven purchasable house plots with `/ol house home` teleport
+- **Pet** (`/ol pet`) - config-driven follower pets (unlock/summon/dismiss)
+- **Mount** (`/ol mount`) - config-driven rideable mounts (unlock/summon/dismiss)
+- **Ranking** (`/ol ranking`) - level leaderboard GUI, reads orelia-core's `StatusApi` directly
+- **Achievement** (`/ol achievement`) - config-driven achievements (level/quest/money conditions), rewards via `SkillApi`
 
 ## Building
 

@@ -49,7 +49,7 @@ public final class AuctionModule implements ExtraModule {
         auctionService.loadAll();
 
         AuctionGuiScreen guiScreen = new AuctionGuiScreen(auctionService);
-        plugin.getCommand("auction").setExecutor(new AuctionCommand(auctionService, guiScreen, new GuiManager()));
+        plugin.getPlayerCommandRegistry().register("auction", new AuctionCommand(auctionService, guiScreen, new GuiManager()));
 
         plugin.getSchedulerService().runTimer(auctionService::expireOverdueListings,
                 EXPIRY_CHECK_PERIOD_TICKS, EXPIRY_CHECK_PERIOD_TICKS);

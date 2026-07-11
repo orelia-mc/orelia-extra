@@ -57,7 +57,7 @@ public final class PetModule implements ExtraModule {
         petService.loadAll();
 
         plugin.getServer().getPluginManager().registerEvents(new PetQuitListener(petManager), plugin);
-        plugin.getCommand("pet").setExecutor(new PetCommand(petService));
+        plugin.getPlayerCommandRegistry().register("pet", new PetCommand(petService));
 
         plugin.getSchedulerService().runTimer(petManager::tickFollow, FOLLOW_TICK_PERIOD_TICKS, FOLLOW_TICK_PERIOD_TICKS);
     }

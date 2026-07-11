@@ -64,7 +64,7 @@ public final class AchievementModule implements ExtraModule {
         achievementService.loadAll();
 
         plugin.getServer().getPluginManager().registerEvents(new AchievementJoinListener(achievementService), plugin);
-        plugin.getCommand("achievement").setExecutor(new AchievementCommand(achievementService));
+        plugin.getPlayerCommandRegistry().register("achievement", new AchievementCommand(achievementService));
 
         plugin.getSchedulerService().runTimer(achievementService::checkAll, CHECK_PERIOD_TICKS, CHECK_PERIOD_TICKS);
     }

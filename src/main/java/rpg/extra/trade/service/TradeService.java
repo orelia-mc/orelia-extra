@@ -13,7 +13,7 @@ import java.util.UUID;
 /**
  * Two-player item trade (SOW TradeModule). Deliberately command-driven rather than a
  * shared GUI: each side adds/removes items from their own offer with
- * {@code /trade add|remove}, then both must {@code /trade confirm} before anything moves.
+ * {@code /ol trade add|remove}, then both must {@code /ol trade confirm} before anything moves.
  * Items leave the offering player's inventory the moment they're added (so a player can't
  * offer an item and still use/drop it), and are returned immediately on cancel.
  */

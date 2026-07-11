@@ -26,7 +26,7 @@ public final class RankingModule implements ExtraModule {
         }
 
         RankingGuiScreen guiScreen = new RankingGuiScreen(statusApi);
-        plugin.getCommand("ranking").setExecutor(new RankingCommand(guiScreen, new GuiManager()));
+        plugin.getPlayerCommandRegistry().register("ranking", new RankingCommand(guiScreen, new GuiManager()));
     }
 
     @Override

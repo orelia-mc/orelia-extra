@@ -55,7 +55,7 @@ public final class MountModule implements ExtraModule {
         mountService.loadAll();
 
         plugin.getServer().getPluginManager().registerEvents(new MountLifecycleListener(mountManager), plugin);
-        plugin.getCommand("mount").setExecutor(new MountCommand(mountService));
+        plugin.getPlayerCommandRegistry().register("mount", new MountCommand(mountService));
     }
 
     @Override

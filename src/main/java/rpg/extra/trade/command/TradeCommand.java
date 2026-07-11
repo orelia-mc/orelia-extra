@@ -11,7 +11,7 @@ import rpg.extra.trade.model.TradeSession;
 import rpg.extra.trade.service.TradeService;
 
 /**
- * {@code /trade <player>|accept|add|remove <index>|confirm|cancel|view} (SOW TradeModule).
+ * {@code /ol trade <player>|accept|add|remove <index>|confirm|cancel|view} (SOW TradeModule).
  */
 public final class TradeCommand implements CommandExecutor {
 
@@ -28,7 +28,7 @@ public final class TradeCommand implements CommandExecutor {
             return true;
         }
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.YELLOW + "Usage: /trade <player>|accept|add|remove <index>|confirm|cancel|view");
+            sender.sendMessage(ChatColor.YELLOW + "Usage: /ol trade <player>|accept|add|remove <index>|confirm|cancel|view");
             return true;
         }
 
@@ -36,7 +36,7 @@ public final class TradeCommand implements CommandExecutor {
             case "accept" -> {
                 TradeService.ActionResult result = tradeService.accept(player);
                 if (result == TradeService.ActionResult.OK) {
-                    player.sendMessage(ChatColor.GREEN + "取引を開始しました。/trade add でアイテムを追加できます。");
+                    player.sendMessage(ChatColor.GREEN + "取引を開始しました。/ol trade add でアイテムを追加できます。");
                 } else {
                     report(sender, result);
                 }
@@ -44,7 +44,7 @@ public final class TradeCommand implements CommandExecutor {
             case "add" -> report(sender, tradeService.addHeldItem(player));
             case "remove" -> {
                 if (args.length < 2) {
-                    sender.sendMessage(ChatColor.YELLOW + "Usage: /trade remove <index>");
+                    sender.sendMessage(ChatColor.YELLOW + "Usage: /ol trade remove <index>");
                     return true;
                 }
                 try {
@@ -70,7 +70,7 @@ public final class TradeCommand implements CommandExecutor {
                 TradeService.ActionResult result = tradeService.request(player, target);
                 report(sender, result);
                 if (result == TradeService.ActionResult.OK) {
-                    target.sendMessage(ChatColor.GREEN + player.getName() + "から取引の申し込みが届きました。/trade accept で応じられます。");
+                    target.sendMessage(ChatColor.GREEN + player.getName() + "から取引の申し込みが届きました。/ol trade accept で応じられます。");
                 }
             }
         }

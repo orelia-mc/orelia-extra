@@ -40,7 +40,7 @@ public final class MailModule implements ExtraModule {
         this.mailService = new MailService(repository);
         MailGuiScreen guiScreen = new MailGuiScreen(mailService);
 
-        plugin.getCommand("mail").setExecutor(new MailCommand(mailService, guiScreen, new GuiManager()));
+        plugin.getPlayerCommandRegistry().register("mail", new MailCommand(mailService, guiScreen, new GuiManager()));
     }
 
     @Override

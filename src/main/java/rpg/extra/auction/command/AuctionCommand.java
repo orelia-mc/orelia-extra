@@ -13,7 +13,7 @@ import rpg.gui.framework.GuiManager;
 import java.util.List;
 
 /**
- * {@code /auction [list|sell <price>|collect]} (SOW AuctionModule). Plain {@code /auction}
+ * {@code /ol auction [list|sell <price>|collect]} (SOW AuctionModule). Plain {@code /ol auction}
  * opens the browse/buy GUI.
  */
 public final class AuctionCommand implements CommandExecutor {
@@ -44,7 +44,7 @@ public final class AuctionCommand implements CommandExecutor {
         switch (args[0].toLowerCase()) {
             case "sell" -> {
                 if (args.length < 2) {
-                    sender.sendMessage(ChatColor.YELLOW + "Usage: /auction sell <price>");
+                    sender.sendMessage(ChatColor.YELLOW + "Usage: /ol auction sell <price>");
                     return true;
                 }
                 try {
@@ -71,7 +71,7 @@ public final class AuctionCommand implements CommandExecutor {
                 }
                 sender.sendMessage(ChatColor.GREEN + (collected + "件の未売却アイテムを回収しました。"));
             }
-            default -> sender.sendMessage(ChatColor.YELLOW + "Usage: /auction [list|sell <price>|collect]");
+            default -> sender.sendMessage(ChatColor.YELLOW + "Usage: /ol auction [list|sell <price>|collect]");
         }
         return true;
     }
