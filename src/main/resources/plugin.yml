@@ -1,0 +1,9 @@
+name: OreliaExtra
+version: '${version}'
+main: rpg.extra.core.OreliaExtraPlugin
+api-version: '1.21'
+author: rasp1220
+description: Orelia later-MMORPG-feature plugin - Party, Guild, Trade, Mail, Auction, Housing, Pet, Mount, Ranking, Achievement
+folia-supported: false
+depend: [OreliaCore]
+softdepend: [OreliaWorld, Vault]
