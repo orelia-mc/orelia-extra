@@ -40,10 +40,6 @@ public final class TradeSession {
         return playerId.equals(playerA) ? offerA : offerB;
     }
 
-    public boolean involves(UUID playerId) {
-        return playerId.equals(playerA) || playerId.equals(playerB);
-    }
-
     public boolean bothConfirmed() {
         return offerA.isConfirmed() && offerB.isConfirmed();
     }

@@ -101,10 +101,6 @@ public final class PartyService {
         return ActionResult.OK;
     }
 
-    public boolean isSameParty(UUID a, UUID b) {
-        return manager.getByPlayer(a).map(Party::getId).equals(manager.getByPlayer(b).map(Party::getId));
-    }
-
     public Optional<Party> getParty(UUID playerId) {
         return manager.getByPlayer(playerId);
     }

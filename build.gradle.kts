@@ -31,8 +31,8 @@ dependencies {
     // orelia-extra only ever calls into orelia-core/orelia-world through their published
     // rpg.api interfaces (Bukkit ServicesManager) or generic rpg.core.* infrastructure -
     // never gameplay-module internals directly.
-    compileOnly("com.github.rasp1220:orelia-core:main-SNAPSHOT")
-    compileOnly("com.github.rasp1220:orelia-world:main-SNAPSHOT")
+    compileOnly("com.github.orelia-mc:orelia-core:main-SNAPSHOT")
+    compileOnly("com.github.orelia-mc:orelia-world:main-SNAPSHOT")
 
     testImplementation(platform("org.junit:junit-bom:5.10.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
