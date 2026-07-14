@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -75,16 +74,4 @@ public final class HouseOwnershipRepository implements SchemaOwner {
         }
     }
 
-    public Optional<String> findPlotByOwner(UUID ownerId) {
-        try (Connection connection = databaseManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement(
-                     "SELECT plot_id FROM house_ownership WHERE owner_uuid = ?")) {
-            statement.setString(1, ownerId.toString());
-            try (ResultSet resultSet = statement.executeQuery()) {
-                return resultSet.next() ? Optional.of(resultSet.getString("plot_id")) : Optional.empty();
-            }
-        } catch (SQLException e) {
-            throw new IllegalStateException("Failed to load house ownership for " + ownerId, e);
-        }
-    }
 }

@@ -110,8 +110,4 @@ public final class MountService {
     public String getSelectedMountId(UUID ownerId) {
         return selectedByOwner.get(ownerId);
     }
-
-    public MountManager getMountManager() {
-        return mountManager;
-    }
 }
