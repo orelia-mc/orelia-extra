@@ -87,7 +87,7 @@ public final class MountService {
         entity.setCustomNameVisible(true);
         if (entity instanceof LivingEntity livingEntity) {
             livingEntity.setRemoveWhenFarAway(false);
-            var speedAttribute = livingEntity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
+            var speedAttribute = livingEntity.getAttribute(Attribute.MOVEMENT_SPEED);
             if (speedAttribute != null) {
                 speedAttribute.setBaseValue(definition.getSpeed());
             }
