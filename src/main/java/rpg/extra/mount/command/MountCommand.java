@@ -1,10 +1,10 @@
 package rpg.extra.mount.command;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import rpg.core.message.MessageManager;
 import rpg.extra.mount.model.MountDefinition;
 import rpg.extra.mount.service.MountService;
 
@@ -17,15 +17,17 @@ import java.util.Set;
 public final class MountCommand implements CommandExecutor {
 
     private final MountService mountService;
+    private final MessageManager messages;
 
-    public MountCommand(MountService mountService) {
+    public MountCommand(MountService mountService, MessageManager messages) {
         this.mountService = mountService;
+        this.messages = messages;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("Players only.");
+            messages.send(sender, "command.player-only");
             return true;
         }
         if (args.length == 0 || args[0].equalsIgnoreCase("list")) {
@@ -36,7 +38,7 @@ public final class MountCommand implements CommandExecutor {
         switch (args[0].toLowerCase()) {
             case "buy" -> {
                 if (args.length < 2) {
-                    sender.sendMessage(ChatColor.YELLOW + "Usage: /ol mount buy <id>");
+                    messages.send(sender, "usage.mount-buy");
                     return true;
                 }
                 report(sender, mountService.unlock(player, args[1]));
@@ -44,13 +46,13 @@ public final class MountCommand implements CommandExecutor {
             case "summon" -> {
                 String mountId = args.length >= 2 ? args[1] : mountService.getSelectedMountId(player.getUniqueId());
                 if (mountId == null) {
-                    sender.sendMessage(ChatColor.YELLOW + "Usage: /ol mount summon <id>");
+                    messages.send(sender, "usage.mount-summon");
                     return true;
                 }
                 report(sender, mountService.summon(player, mountId));
             }
             case "dismiss" -> report(sender, mountService.dismiss(player));
-            default -> sender.sendMessage(ChatColor.YELLOW + "Usage: /ol mount [list|buy <id>|summon [id]|dismiss]");
+            default -> messages.send(sender, "usage.mount");
         }
         return true;
     }
@@ -59,30 +61,30 @@ public final class MountCommand implements CommandExecutor {
         Map<String, MountDefinition> all = mountService.getAllMounts();
         Set<String> unlocked = mountService.getUnlockedMounts(player.getUniqueId());
         if (all.isEmpty()) {
-            sender.sendMessage(ChatColor.YELLOW + "利用可能な乗り物がありません。");
+            messages.send(sender, "mount.no-mounts-available");
             return;
         }
-        sender.sendMessage(ChatColor.GREEN + "乗り物一覧:");
+        messages.send(sender, "mount.list-header");
         all.values().forEach(mount -> {
             boolean owned = unlocked.contains(mount.getId());
-            sender.sendMessage(ChatColor.GRAY + "- " + mount.getId() + " (" + mount.getName() + ") "
-                    + (owned ? ChatColor.GREEN + "所持済み" : ChatColor.GOLD + (mount.getPrice() + "G")));
+            String status = owned ? messages.format("mount.owned-tag") : messages.format("mount.price-tag", "price", mount.getPrice());
+            messages.sendRaw(sender, "mount.list-entry", "id", mount.getId(), "name", mount.getName(), "status", status);
         });
     }
 
     private void report(CommandSender sender, MountService.ActionResult result) {
         if (result == MountService.ActionResult.OK) {
-            sender.sendMessage(ChatColor.GREEN + "OK");
+            messages.send(sender, "command.ok");
             return;
         }
-        String message = switch (result) {
-            case MOUNT_NOT_FOUND -> "指定した乗り物は存在しません。";
-            case ALREADY_UNLOCKED -> "既に所持しています。";
-            case NOT_UNLOCKED -> "その乗り物はまだ購入していません。";
-            case INSUFFICIENT_FUNDS -> "所持金が足りません。";
-            case NO_ACTIVE_MOUNT -> "呼び出し中の乗り物がいません。";
-            case OK -> "OK";
+        String key = switch (result) {
+            case MOUNT_NOT_FOUND -> "mount.not-found";
+            case ALREADY_UNLOCKED -> "mount.already-unlocked";
+            case NOT_UNLOCKED -> "mount.not-unlocked";
+            case INSUFFICIENT_FUNDS -> "mount.insufficient-funds";
+            case NO_ACTIVE_MOUNT -> "mount.no-active-mount";
+            case OK -> "command.ok";
         };
-        sender.sendMessage(ChatColor.RED + message);
+        messages.send(sender, key);
     }
 }

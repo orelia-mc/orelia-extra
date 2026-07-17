@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("com.gradleup.shadow") version "9.5.1"
+    id("maven-publish")
 }
 
 group = "rpg"
@@ -13,6 +14,11 @@ java {
 }
 
 repositories {
+    // TEMP DEV LOOP: prefers locally-published orelia-core/orelia-world (./gradlew
+    // publishToMavenLocal in those repos) over jitpack, so in-flight changes are picked up
+    // without a push. Remove this line before merging - production builds should resolve
+    // from jitpack only.
+    mavenLocal()
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
     // Resolves orelia-core/orelia-world straight from their GitHub repos, same as
@@ -61,5 +67,20 @@ tasks.processResources {
     filteringCharset = "UTF-8"
     filesMatching("plugin.yml") {
         expand(props)
+    }
+}
+
+// Publishes to mavenLocal under the same coordinates jitpack normally resolves
+// (com.github.orelia-mc:orelia-extra:main-SNAPSHOT), so a future orelia-debug plugin can pick
+// up local changes during development without waiting on a push. Temporary dev-loop aid only -
+// production builds still resolve this dependency from jitpack.io.
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "com.github.orelia-mc"
+            artifactId = "orelia-extra"
+            version = "main-SNAPSHOT"
+            from(components["java"])
+        }
     }
 }

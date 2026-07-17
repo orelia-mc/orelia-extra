@@ -1,10 +1,10 @@
 package rpg.extra.auction.command;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import rpg.core.message.MessageManager;
 import rpg.extra.auction.gui.AuctionGuiScreen;
 import rpg.extra.auction.model.AuctionListing;
 import rpg.extra.auction.service.AuctionService;
@@ -23,17 +23,20 @@ public final class AuctionCommand implements CommandExecutor {
     private final AuctionService auctionService;
     private final AuctionGuiScreen guiScreen;
     private final GuiManager guiManager;
+    private final MessageManager messages;
 
-    public AuctionCommand(AuctionService auctionService, AuctionGuiScreen guiScreen, GuiManager guiManager) {
+    public AuctionCommand(AuctionService auctionService, AuctionGuiScreen guiScreen, GuiManager guiManager,
+                           MessageManager messages) {
         this.auctionService = auctionService;
         this.guiScreen = guiScreen;
         this.guiManager = guiManager;
+        this.messages = messages;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("Players only.");
+            messages.send(sender, "command.player-only");
             return true;
         }
         if (args.length == 0 || args[0].equalsIgnoreCase("list")) {
@@ -44,23 +47,25 @@ public final class AuctionCommand implements CommandExecutor {
         switch (args[0].toLowerCase()) {
             case "sell" -> {
                 if (args.length < 2) {
-                    sender.sendMessage(ChatColor.YELLOW + "Usage: /ol auction sell <price>");
+                    messages.send(sender, "usage.auction-sell");
                     return true;
                 }
                 try {
                     double price = Double.parseDouble(args[1]);
                     AuctionService.ActionResult result = auctionService.list(player, price, DEFAULT_DURATION_MILLIS);
-                    sender.sendMessage(result == AuctionService.ActionResult.OK
-                            ? ChatColor.GREEN + "手に持っているアイテムを出品しました。"
-                            : ChatColor.RED + "出品に失敗しました: " + result);
+                    if (result == AuctionService.ActionResult.OK) {
+                        messages.send(sender, "auction.listed");
+                    } else {
+                        messages.send(sender, "auction.list-failed", "result", result);
+                    }
                 } catch (NumberFormatException e) {
-                    sender.sendMessage(ChatColor.RED + "価格は数値で指定してください。");
+                    messages.send(sender, "auction.invalid-price");
                 }
             }
             case "collect" -> {
                 List<AuctionListing> collectable = auctionService.getCollectable(player.getUniqueId());
                 if (collectable.isEmpty()) {
-                    sender.sendMessage(ChatColor.YELLOW + "受け取れるものはありません。");
+                    messages.send(sender, "auction.nothing-to-collect");
                     return true;
                 }
                 int collected = 0;
@@ -69,9 +74,9 @@ public final class AuctionCommand implements CommandExecutor {
                         collected++;
                     }
                 }
-                sender.sendMessage(ChatColor.GREEN + (collected + "件の未売却アイテムを回収しました。"));
+                messages.send(sender, "auction.collected", "count", collected);
             }
-            default -> sender.sendMessage(ChatColor.YELLOW + "Usage: /ol auction [list|sell <price>|collect]");
+            default -> messages.send(sender, "usage.auction");
         }
         return true;
     }

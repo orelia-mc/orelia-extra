@@ -13,6 +13,8 @@ import rpg.gui.framework.GuiManager;
  */
 public final class RankingModule implements ExtraModule {
 
+    private RankingGuiScreen guiScreen;
+
     @Override
     public String getName() {
         return "ranking";
@@ -25,11 +27,17 @@ public final class RankingModule implements ExtraModule {
             throw new IllegalStateException("ranking module requires OreliaCore's StatusApi");
         }
 
-        RankingGuiScreen guiScreen = new RankingGuiScreen(statusApi);
-        plugin.getPlayerCommandRegistry().register("ranking", new RankingCommand(guiScreen, new GuiManager()));
+        this.guiScreen = new RankingGuiScreen(statusApi);
+        plugin.getPlayerCommandRegistry().register("ranking",
+                new RankingCommand(guiScreen, new GuiManager(), plugin.getMessageManager()),
+                "レベルランキングを表示します。", "ranking");
     }
 
     @Override
     public void onDisable() {
+    }
+
+    public RankingGuiScreen getGuiScreen() {
+        return guiScreen;
     }
 }

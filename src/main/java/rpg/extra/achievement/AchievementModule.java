@@ -60,11 +60,14 @@ public final class AchievementModule implements ExtraModule {
             plugin.getLogger().log(Level.SEVERE, "Failed to initialize achievement schema", e);
         }
 
-        this.achievementService = new AchievementService(configRepository, progressRepository, statusApi, skillApi, economy, questApi);
+        this.achievementService = new AchievementService(configRepository, progressRepository, statusApi, skillApi, economy,
+                questApi, plugin.getMessageManager());
         achievementService.loadAll();
 
         plugin.getServer().getPluginManager().registerEvents(new AchievementJoinListener(achievementService), plugin);
-        plugin.getPlayerCommandRegistry().register("achievement", new AchievementCommand(achievementService));
+        plugin.getPlayerCommandRegistry().register("achievement",
+                new AchievementCommand(achievementService, plugin.getMessageManager()),
+                "実績一覧を表示します。", "achievement");
 
         plugin.getSchedulerService().runTimer(achievementService::checkAll, CHECK_PERIOD_TICKS, CHECK_PERIOD_TICKS);
     }

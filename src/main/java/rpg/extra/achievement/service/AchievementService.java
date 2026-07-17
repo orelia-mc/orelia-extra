@@ -2,10 +2,10 @@ package rpg.extra.achievement.service;
 
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import rpg.api.SkillApi;
 import rpg.api.StatusApi;
+import rpg.core.message.MessageManager;
 import rpg.extra.achievement.model.AchievementDefinition;
 import rpg.extra.achievement.repository.AchievementConfigRepository;
 import rpg.extra.achievement.repository.AchievementProgressRepository;
@@ -31,16 +31,19 @@ public final class AchievementService {
     private final SkillApi skillApi;
     private final Economy economy;
     private final QuestApi questApi;
+    private final MessageManager messages;
     private final Map<UUID, Set<String>> unlockedByOwner = new ConcurrentHashMap<>();
 
     public AchievementService(AchievementConfigRepository configRepository, AchievementProgressRepository progressRepository,
-                               StatusApi statusApi, SkillApi skillApi, Economy economy, QuestApi questApi) {
+                               StatusApi statusApi, SkillApi skillApi, Economy economy, QuestApi questApi,
+                               MessageManager messages) {
         this.configRepository = configRepository;
         this.progressRepository = progressRepository;
         this.statusApi = statusApi;
         this.skillApi = skillApi;
         this.economy = economy;
         this.questApi = questApi;
+        this.messages = messages;
     }
 
     public void loadAll() {
@@ -91,6 +94,6 @@ public final class AchievementService {
         if (achievement.getRewardSkillPoints() > 0) {
             skillApi.grantSkillPoints(player.getUniqueId(), achievement.getRewardSkillPoints());
         }
-        player.sendMessage(ChatColor.GOLD + "実績解除: " + ChatColor.YELLOW + achievement.getName());
+        messages.send(player, "achievement.unlocked", "name", achievement.getName());
     }
 }
