@@ -51,7 +51,8 @@ public final class HousingModule implements ExtraModule {
         this.housingService = new HousingService(plotRepository, ownershipRepository, economy);
         housingService.loadAll();
 
-        plugin.getPlayerCommandRegistry().register("house", new HousingCommand(housingService));
+        plugin.getPlayerCommandRegistry().register("house", new HousingCommand(housingService, plugin.getMessageManager()),
+                "自宅の購入・移動を行います。", "house [list|buy <plotId>|home]");
     }
 
     @Override

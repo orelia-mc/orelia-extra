@@ -21,6 +21,7 @@ public final class AuctionModule implements ExtraModule {
     private static final long EXPIRY_CHECK_PERIOD_TICKS = 20L * 60;
 
     private AuctionService auctionService;
+    private AuctionGuiScreen guiScreen;
 
     @Override
     public String getName() {
@@ -48,8 +49,10 @@ public final class AuctionModule implements ExtraModule {
         this.auctionService = new AuctionService(repository, economy);
         auctionService.loadAll();
 
-        AuctionGuiScreen guiScreen = new AuctionGuiScreen(auctionService);
-        plugin.getPlayerCommandRegistry().register("auction", new AuctionCommand(auctionService, guiScreen, new GuiManager()));
+        this.guiScreen = new AuctionGuiScreen(auctionService);
+        plugin.getPlayerCommandRegistry().register("auction",
+                new AuctionCommand(auctionService, guiScreen, new GuiManager(), plugin.getMessageManager()),
+                "オークションを利用します。", "auction [list|sell <price>|collect]");
 
         plugin.getSchedulerService().runTimer(auctionService::expireOverdueListings,
                 EXPIRY_CHECK_PERIOD_TICKS, EXPIRY_CHECK_PERIOD_TICKS);
@@ -61,5 +64,9 @@ public final class AuctionModule implements ExtraModule {
 
     public AuctionService getAuctionService() {
         return auctionService;
+    }
+
+    public AuctionGuiScreen getGuiScreen() {
+        return guiScreen;
     }
 }

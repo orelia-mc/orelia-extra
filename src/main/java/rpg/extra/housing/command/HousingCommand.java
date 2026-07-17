@@ -1,10 +1,10 @@
 package rpg.extra.housing.command;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import rpg.core.message.MessageManager;
 import rpg.extra.housing.model.HousePlot;
 import rpg.extra.housing.service.HousingService;
 
@@ -16,19 +16,21 @@ import java.util.Map;
 public final class HousingCommand implements CommandExecutor {
 
     private final HousingService housingService;
+    private final MessageManager messages;
 
-    public HousingCommand(HousingService housingService) {
+    public HousingCommand(HousingService housingService, MessageManager messages) {
         this.housingService = housingService;
+        this.messages = messages;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("Players only.");
+            messages.send(sender, "command.player-only");
             return true;
         }
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.YELLOW + "Usage: /ol house [list|buy <plotId>|home]");
+            messages.send(sender, "usage.house");
             return true;
         }
 
@@ -36,40 +38,40 @@ public final class HousingCommand implements CommandExecutor {
             case "list" -> {
                 Map<String, HousePlot> available = housingService.getAvailablePlots();
                 if (available.isEmpty()) {
-                    sender.sendMessage(ChatColor.YELLOW + "購入可能な土地はありません。");
+                    messages.send(sender, "housing.no-plots-available");
                     return true;
                 }
-                sender.sendMessage(ChatColor.GREEN + "購入可能な土地:");
-                available.values().forEach(plot -> sender.sendMessage(
-                        ChatColor.GRAY + "- " + plot.getId() + " (" + plot.getName() + ") " + plot.getPrice() + "G"));
+                messages.send(sender, "housing.available-header");
+                available.values().forEach(plot -> messages.sendRaw(sender, "housing.plot-entry",
+                        "id", plot.getId(), "name", plot.getName(), "price", plot.getPrice()));
             }
             case "buy" -> {
                 if (args.length < 2) {
-                    sender.sendMessage(ChatColor.YELLOW + "Usage: /ol house buy <plotId>");
+                    messages.send(sender, "usage.house-buy");
                     return true;
                 }
                 report(sender, housingService.purchase(player, args[1]));
             }
             case "home" -> report(sender, housingService.teleportHome(player));
-            default -> sender.sendMessage(ChatColor.YELLOW + "Usage: /ol house [list|buy <plotId>|home]");
+            default -> messages.send(sender, "usage.house");
         }
         return true;
     }
 
     private void report(CommandSender sender, HousingService.ActionResult result) {
         if (result == HousingService.ActionResult.OK) {
-            sender.sendMessage(ChatColor.GREEN + "OK");
+            messages.send(sender, "command.ok");
             return;
         }
-        String message = switch (result) {
-            case PLOT_NOT_FOUND -> "指定した土地は存在しません。";
-            case PLOT_TAKEN -> "その土地は既に購入されています。";
-            case ALREADY_OWN_A_HOUSE -> "既に自宅を所有しています。";
-            case INSUFFICIENT_FUNDS -> "所持金が足りません。";
-            case NO_HOUSE -> "自宅を所有していません。/ol house list で購入できます。";
-            case WORLD_NOT_FOUND -> "自宅のワールドが見つかりません。";
-            case OK -> "OK";
+        String key = switch (result) {
+            case PLOT_NOT_FOUND -> "housing.plot-not-found";
+            case PLOT_TAKEN -> "housing.plot-taken";
+            case ALREADY_OWN_A_HOUSE -> "housing.already-own-house";
+            case INSUFFICIENT_FUNDS -> "housing.insufficient-funds";
+            case NO_HOUSE -> "housing.no-house";
+            case WORLD_NOT_FOUND -> "housing.world-not-found";
+            case OK -> "command.ok";
         };
-        sender.sendMessage(ChatColor.RED + message);
+        messages.send(sender, key);
     }
 }

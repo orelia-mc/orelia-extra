@@ -55,7 +55,8 @@ public final class MountModule implements ExtraModule {
         mountService.loadAll();
 
         plugin.getServer().getPluginManager().registerEvents(new MountLifecycleListener(mountManager), plugin);
-        plugin.getPlayerCommandRegistry().register("mount", new MountCommand(mountService));
+        plugin.getPlayerCommandRegistry().register("mount", new MountCommand(mountService, plugin.getMessageManager()),
+                "乗り物を管理します。", "mount [list|buy <id>|summon [id]|dismiss]");
     }
 
     @Override

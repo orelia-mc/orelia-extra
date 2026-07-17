@@ -17,6 +17,7 @@ import java.util.logging.Level;
 public final class MailModule implements ExtraModule {
 
     private MailService mailService;
+    private MailGuiScreen guiScreen;
 
     @Override
     public String getName() {
@@ -38,9 +39,11 @@ public final class MailModule implements ExtraModule {
         }
 
         this.mailService = new MailService(repository);
-        MailGuiScreen guiScreen = new MailGuiScreen(mailService);
+        this.guiScreen = new MailGuiScreen(mailService);
 
-        plugin.getPlayerCommandRegistry().register("mail", new MailCommand(mailService, guiScreen, new GuiManager()));
+        plugin.getPlayerCommandRegistry().register("mail",
+                new MailCommand(mailService, guiScreen, new GuiManager(), plugin.getMessageManager()),
+                "郵便受けを開きます。", "mail [unread]");
     }
 
     @Override
@@ -49,5 +52,9 @@ public final class MailModule implements ExtraModule {
 
     public MailService getMailService() {
         return mailService;
+    }
+
+    public MailGuiScreen getGuiScreen() {
+        return guiScreen;
     }
 }

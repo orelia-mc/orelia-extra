@@ -5,9 +5,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import rpg.core.command.AdminCommandRegistry;
 import rpg.core.command.PlayerCommandRegistry;
 import rpg.core.config.ConfigManager;
+import rpg.core.message.MessageManager;
 import rpg.core.player.PlayerDataManager;
 import rpg.core.scheduler.SchedulerService;
 import rpg.extra.achievement.AchievementModule;
+import rpg.extra.api.ExtraApiModule;
 import rpg.extra.auction.AuctionModule;
 import rpg.extra.core.command.ExtraAdminCommand;
 import rpg.extra.core.module.ExtraModuleManager;
@@ -33,6 +35,7 @@ import rpg.extra.trade.TradeModule;
 public final class OreliaExtraPlugin extends JavaPlugin {
 
     private ConfigManager configManager;
+    private MessageManager messageManager;
     private SchedulerService schedulerService;
     private PlayerDataManager playerDataManager;
     private PlayerCommandRegistry playerCommandRegistry;
@@ -64,11 +67,13 @@ public final class OreliaExtraPlugin extends JavaPlugin {
 
         this.configManager = new ConfigManager(this);
         this.configManager.register("config.yml");
+        this.messageManager = new MessageManager(configManager.register("messages.yml"));
 
         this.schedulerService = new SchedulerService(this);
         this.moduleManager = new ExtraModuleManager(this);
 
-        adminCommandRegistration.getProvider().register("extrareload", new ExtraAdminCommand(this));
+        adminCommandRegistration.getProvider().register("extrareload", new ExtraAdminCommand(this),
+                "orelia-extra の設定を再読み込みします。", "extrareload");
 
         moduleManager.register(new PartyModule());
         moduleManager.register(new GuildModule());
@@ -80,6 +85,7 @@ public final class OreliaExtraPlugin extends JavaPlugin {
         moduleManager.register(new MountModule());
         moduleManager.register(new RankingModule());
         moduleManager.register(new AchievementModule());
+        moduleManager.register(new ExtraApiModule());
         moduleManager.enableAll();
     }
 
@@ -97,6 +103,10 @@ public final class OreliaExtraPlugin extends JavaPlugin {
 
     public ConfigManager getConfigManager() {
         return configManager;
+    }
+
+    public MessageManager getMessageManager() {
+        return messageManager;
     }
 
     public SchedulerService getSchedulerService() {
