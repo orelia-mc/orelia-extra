@@ -68,6 +68,8 @@ guild:
   no-pending-invite: "&%c招待が届いていません。"
   cannot-target-self: "&%c自分自身は対象にできません。"
   cannot-target-leader: "&%cリーダーを対象にはできません。"
+  npc-summary: "&%a[{tag}] {name} &%7- あなたの役職: {role} (メンバー数: {members})"
+  npc-no-guild: "&%eギルドに未所属です。/ol guild create &%7<&%ename&%7>&%e &%7<&%etag&%7>&%e で作成できます。"
 
 trade:
   started: "&%a取引を開始しました。/ol trade add でアイテムを追加できます。"
@@ -95,6 +97,8 @@ auction:
   invalid-price: "&%c価格は数値で指定してください。"
   nothing-to-collect: "&%e受け取れるものはありません。"
   collected: "&%a{count}件の未売却アイテムを回収しました。"
+  sold-mail-subject: "オークション成立のお知らせ"
+  sold-mail-body: "&%f{item} &%7が &%e{price}G &%7で売れました（購入者: {buyer}）。代金は既にあなたの所持金へ振り込まれています。"
 
 housing:
   no-plots-available: "&%e購入可能な土地はありません。"

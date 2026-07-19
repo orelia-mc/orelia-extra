@@ -8,6 +8,7 @@ import rpg.extra.auction.repository.AuctionRepository;
 import rpg.extra.auction.service.AuctionService;
 import rpg.extra.core.OreliaExtraPlugin;
 import rpg.extra.core.module.ExtraModule;
+import rpg.extra.mail.MailModule;
 import rpg.gui.framework.GuiManager;
 
 import java.util.logging.Level;
@@ -38,6 +39,8 @@ public final class AuctionModule implements ExtraModule {
         if (economy == null) {
             throw new IllegalStateException("auction module requires Vault's Economy service");
         }
+        MailModule mailModule = plugin.getModuleManager().get(MailModule.class)
+                .orElseThrow(() -> new IllegalStateException("auction module requires mail module"));
 
         AuctionRepository repository = new AuctionRepository(databaseManager);
         try {
@@ -46,7 +49,7 @@ public final class AuctionModule implements ExtraModule {
             plugin.getLogger().log(Level.SEVERE, "Failed to initialize auction schema", e);
         }
 
-        this.auctionService = new AuctionService(repository, economy);
+        this.auctionService = new AuctionService(repository, economy, mailModule.getMailService(), plugin.getMessageManager());
         auctionService.loadAll();
 
         this.guiScreen = new AuctionGuiScreen(auctionService);

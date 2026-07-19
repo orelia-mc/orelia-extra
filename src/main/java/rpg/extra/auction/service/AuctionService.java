@@ -4,8 +4,10 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import rpg.core.message.MessageManager;
 import rpg.extra.auction.model.AuctionListing;
 import rpg.extra.auction.repository.AuctionRepository;
+import rpg.extra.mail.service.MailService;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -27,11 +29,15 @@ public final class AuctionService {
 
     private final AuctionRepository repository;
     private final Economy economy;
+    private final MailService mailService;
+    private final MessageManager messages;
     private final Map<UUID, AuctionListing> listingsById = new ConcurrentHashMap<>();
 
-    public AuctionService(AuctionRepository repository, Economy economy) {
+    public AuctionService(AuctionRepository repository, Economy economy, MailService mailService, MessageManager messages) {
         this.repository = repository;
         this.economy = economy;
+        this.mailService = mailService;
+        this.messages = messages;
     }
 
     public void loadAll() {
@@ -98,6 +104,11 @@ public final class AuctionService {
         }
         economy.withdrawPlayer(buyer, listing.getPrice());
         economy.depositPlayer(Bukkit.getOfflinePlayer(listing.getSellerId()), listing.getPrice());
+
+        String itemName = listing.getItem().getType().name();
+        String subject = messages.format("auction.sold-mail-subject", "item", itemName);
+        String body = messages.format("auction.sold-mail-body", "item", itemName, "price", listing.getPrice(), "buyer", buyer.getName());
+        mailService.send(listing.getSellerId(), null, subject, body);
 
         if (!buyer.getInventory().addItem(listing.getItem().clone()).isEmpty()) {
             buyer.getWorld().dropItemNaturally(buyer.getLocation(), listing.getItem().clone());
