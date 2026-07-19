@@ -5,6 +5,7 @@ import rpg.extra.core.OreliaExtraPlugin;
 import rpg.extra.core.module.ExtraModule;
 import rpg.extra.guild.command.GuildCommand;
 import rpg.extra.guild.listener.GuildQuitListener;
+import rpg.extra.guild.listener.NpcGuildInteractListener;
 import rpg.extra.guild.manager.GuildManager;
 import rpg.extra.guild.repository.GuildRepository;
 import rpg.extra.guild.service.GuildService;
@@ -44,6 +45,7 @@ public final class GuildModule implements ExtraModule {
         this.guildService = new GuildService(manager);
 
         plugin.getServer().getPluginManager().registerEvents(new GuildQuitListener(manager), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new NpcGuildInteractListener(guildService, plugin.getMessageManager()), plugin);
         plugin.getPlayerCommandRegistry().register("guild", new GuildCommand(guildService, plugin.getMessageManager()),
                 "ギルドを管理します。", "guild <create|invite|accept|leave|kick|promote|demote|disband|info>");
     }
