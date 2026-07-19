@@ -25,7 +25,7 @@ public final class AuctionGuiScreen {
     }
 
     public Gui build(Player viewer) {
-        Gui gui = new Gui(ColorUtil.colorize("&8オークション"), 54);
+        Gui gui = new Gui(ColorUtil.colorize("&%8オークション"), 54);
         List<AuctionListing> listings = auctionService.getActiveListings();
 
         int slot = 0;
@@ -35,11 +35,11 @@ public final class AuctionGuiScreen {
             }
             boolean own = listing.getSellerId().equals(viewer.getUniqueId());
             gui.set(slot++, new GuiButton(new ItemBuilder(listing.getItem().getType())
-                    .name((own ? "&e" : "&f") + listing.getItem().getType().name())
+                    .name((own ? "&%e" : "&%f") + listing.getItem().getType().name())
                     .lore(List.of(
-                            "&7出品者: &f" + listing.getSellerName(),
-                            "&7価格: &6" + listing.getPrice(),
-                            own ? "&8クリックでキャンセル" : "&aクリックで購入"))
+                            "&%7出品者: &%f" + listing.getSellerName(),
+                            "&%7価格: &%6" + listing.getPrice(),
+                            own ? "&%8クリックでキャンセル" : "&%aクリックで購入"))
                     .build(), (clicker, clickType) -> {
                 AuctionService.ActionResult result = own
                         ? auctionService.cancel(clicker, listing.getId())
@@ -50,7 +50,7 @@ public final class AuctionGuiScreen {
             }));
         }
         if (listings.isEmpty()) {
-            gui.set(22, new GuiButton(new ItemBuilder(Material.BARRIER).name("&7出品がありません").build(), (clicker, clickType) -> {
+            gui.set(22, new GuiButton(new ItemBuilder(Material.BARRIER).name("&%7出品がありません").build(), (clicker, clickType) -> {
             }));
         }
         return gui;

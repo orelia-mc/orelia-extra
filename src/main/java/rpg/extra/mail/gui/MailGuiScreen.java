@@ -27,7 +27,7 @@ public final class MailGuiScreen {
     }
 
     public Gui build(Player player) {
-        Gui gui = new Gui(ColorUtil.colorize("&8メール"), 54);
+        Gui gui = new Gui(ColorUtil.colorize("&%8メール"), 54);
         List<MailMessage> inbox = mailService.getInbox(player.getUniqueId());
 
         int slot = 0;
@@ -37,12 +37,12 @@ public final class MailGuiScreen {
             }
             Material icon = message.hasAttachments() ? Material.CHEST : Material.PAPER;
             gui.set(slot++, new GuiButton(new ItemBuilder(icon)
-                    .name((message.isRead() ? "&7" : "&e&l") + message.getSubject())
+                    .name((message.isRead() ? "&%7" : "&%e&l") + message.getSubject())
                     .lore(List.of(
-                            "&7差出人: &f" + message.getSenderName(),
-                            "&7" + message.getBody(),
-                            message.hasAttachments() ? (message.isClaimed() ? "&7添付物: 受取済み" : "&a添付物あり - クリックで受け取り") : "&7添付物なし",
-                            "&8クリックで既読にする"))
+                            "&%7差出人: &%f" + message.getSenderName(),
+                            "&%7" + message.getBody(),
+                            message.hasAttachments() ? (message.isClaimed() ? "&%7添付物: 受取済み" : "&%a添付物あり - クリックで受け取り") : "&%7添付物なし",
+                            "&%8クリックで既読にする"))
                     .build(), (clicker, clickType) -> {
                 mailService.markRead(message);
                 if (message.hasAttachments() && !message.isClaimed()) {

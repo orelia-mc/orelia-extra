@@ -26,7 +26,7 @@ public final class RankingGuiScreen {
     }
 
     public Gui build() {
-        Gui gui = new Gui(ColorUtil.colorize("&8レベルランキング"), 27);
+        Gui gui = new Gui(ColorUtil.colorize("&%8レベルランキング"), 27);
         List<LeaderboardEntry> leaderboard = statusApi.getLeaderboard(27);
 
         int slot = 0;
@@ -37,10 +37,10 @@ public final class RankingGuiScreen {
             Material icon = slot < RANK_ICONS.length ? RANK_ICONS[slot] : Material.PLAYER_HEAD;
             int rank = slot + 1;
             gui.set(slot++, new GuiButton(new ItemBuilder(icon)
-                    .name("&e#" + rank + " &f" + entry.name())
+                    .name("&%e#" + rank + " &%f" + entry.name())
                     .lore(List.of(
-                            "&7レベル: &f" + entry.level(),
-                            "&7経験値: &f" + entry.experience()))
+                            "&%7レベル: &%f" + entry.level(),
+                            "&%7経験値: &%f" + entry.experience()))
                     .build(), (clicker, clickType) -> {
             }));
         }
