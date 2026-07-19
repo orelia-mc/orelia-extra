@@ -39,10 +39,11 @@ public final class MailModule implements ExtraModule {
         }
 
         this.mailService = new MailService(repository);
-        this.guiScreen = new MailGuiScreen(mailService);
+        GuiManager guiManager = new GuiManager();
+        this.guiScreen = new MailGuiScreen(mailService, guiManager, plugin.getMessageManager());
 
         plugin.getPlayerCommandRegistry().register("mail",
-                new MailCommand(mailService, guiScreen, new GuiManager(), plugin.getMessageManager()),
+                new MailCommand(mailService, guiScreen, guiManager, plugin.getMessageManager()),
                 "郵便受けを開きます。", "mail [unread]");
     }
 

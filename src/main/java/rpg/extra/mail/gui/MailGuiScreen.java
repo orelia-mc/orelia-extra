@@ -1,12 +1,13 @@
 package rpg.extra.mail.gui;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import rpg.core.message.MessageManager;
 import rpg.extra.mail.model.MailMessage;
 import rpg.extra.mail.service.MailService;
 import rpg.gui.framework.Gui;
 import rpg.gui.framework.GuiButton;
+import rpg.gui.framework.GuiManager;
 import rpg.util.ColorUtil;
 import rpg.util.ItemBuilder;
 
@@ -21,14 +22,24 @@ import java.util.List;
 public final class MailGuiScreen {
 
     private final MailService mailService;
+    private final GuiManager guiManager;
+    private final MessageManager messages;
 
-    public MailGuiScreen(MailService mailService) {
+    public MailGuiScreen(MailService mailService, GuiManager guiManager, MessageManager messages) {
         this.mailService = mailService;
+        this.guiManager = guiManager;
+        this.messages = messages;
     }
 
     public Gui build(Player player) {
         Gui gui = new Gui(ColorUtil.colorize("&%8メール"), 54);
         List<MailMessage> inbox = mailService.getInbox(player.getUniqueId());
+
+        if (inbox.isEmpty()) {
+            gui.set(22, new GuiButton(new ItemBuilder(Material.BARRIER).name(messages.format("mail.no-mail")).build(), (clicker, clickType) -> {
+            }));
+            return gui;
+        }
 
         int slot = 0;
         for (MailMessage message : inbox) {
@@ -47,8 +58,11 @@ public final class MailGuiScreen {
                 mailService.markRead(message);
                 if (message.hasAttachments() && !message.isClaimed()) {
                     boolean claimed = mailService.claim(clicker, message);
-                    clicker.sendMessage(claimed ? ChatColor.GREEN + "添付物を受け取りました。" : ChatColor.RED + "受け取りに失敗しました。");
+                    messages.send(clicker, claimed ? "mail.claimed" : "mail.claim-failed");
                 }
+                // markRead/claim change this message's icon (read state, "受取済み" line) -
+                // reopen so the player sees the update immediately instead of a stale icon.
+                guiManager.open(clicker, build(clicker));
             }));
         }
         return gui;

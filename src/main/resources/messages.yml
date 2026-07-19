@@ -87,18 +87,36 @@ trade:
   cannot-target-self: "&%c自分自身とは取引できません。"
   empty-hand: "&%c手にアイテムを持っていません。"
   invalid-slot: "&%c指定した番号のアイテムはありません。"
+  cancelled-by-quit: "&%c{player}が切断したため取引はキャンセルされました。"
 
 mail:
   unread-count: "&%e未読メール: {count}件"
+  no-mail: "&%7受信メールがありません。"
+  claimed: "&%a添付物を受け取りました。"
+  claim-failed: "&%c受け取りに失敗しました。"
 
 auction:
   listed: "&%a手に持っているアイテムを出品しました。"
-  list-failed: "&%c出品に失敗しました: {result}"
+  list-failed: "&%c出品に失敗しました: {reason}"
+  bought: "&%a{item}を{price}Gで購入しました。"
+  buy-failed: "&%c購入に失敗しました: {reason}"
+  cancelled: "&%a出品を取り消しました。"
+  cancel-failed: "&%cキャンセルに失敗しました: {reason}"
   invalid-price: "&%c価格は数値で指定してください。"
   nothing-to-collect: "&%e受け取れるものはありません。"
   collected: "&%a{count}件の未売却アイテムを回収しました。"
-  sold-mail-subject: "オークション成立のお知らせ"
+  no-listings: "&%7出品がありません。"
+  sold-mail-subject: "{item}が売れました"
   sold-mail-body: "&%f{item} &%7が &%e{price}G &%7で売れました（購入者: {buyer}）。代金は既にあなたの所持金へ振り込まれています。"
+  reason:
+    not-found: "出品が見つかりません"
+    already-resolved: "既に処理済みです"
+    not-owner: "自分の出品ではありません"
+    cannot-buy-own: "自分の出品は購入できません"
+    insufficient-funds: "所持金が足りません"
+    invalid-price: "価格が不正です"
+    empty-hand: "手に何も持っていません"
+    inventory-full: "インベントリに空きがありません"
 
 housing:
   no-plots-available: "&%e購入可能な土地はありません。"
