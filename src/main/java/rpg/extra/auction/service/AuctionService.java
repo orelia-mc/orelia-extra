@@ -24,7 +24,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class AuctionService {
 
     public enum ActionResult {
-        OK, NOT_FOUND, ALREADY_RESOLVED, NOT_OWNER, CANNOT_BUY_OWN, INSUFFICIENT_FUNDS, INVALID_PRICE, EMPTY_HAND, INVENTORY_FULL
+        OK, NOT_FOUND, ALREADY_RESOLVED, NOT_OWNER, CANNOT_BUY_OWN, INSUFFICIENT_FUNDS, INVALID_PRICE, EMPTY_HAND, INVENTORY_FULL;
+
+        /** {@code messages.yml} key for this result's human-readable reason (see {@code auction.reason.*}) - never show the raw enum name to a player. */
+        public String reasonMessageKey() {
+            return "auction.reason." + name().toLowerCase(java.util.Locale.ROOT).replace('_', '-');
+        }
     }
 
     private final AuctionRepository repository;
@@ -105,7 +110,7 @@ public final class AuctionService {
         economy.withdrawPlayer(buyer, listing.getPrice());
         economy.depositPlayer(Bukkit.getOfflinePlayer(listing.getSellerId()), listing.getPrice());
 
-        String itemName = listing.getItem().getType().name();
+        String itemName = listing.getDisplayName();
         String subject = messages.format("auction.sold-mail-subject", "item", itemName);
         String body = messages.format("auction.sold-mail-body", "item", itemName, "price", listing.getPrice(), "buyer", buyer.getName());
         mailService.send(listing.getSellerId(), null, subject, body);

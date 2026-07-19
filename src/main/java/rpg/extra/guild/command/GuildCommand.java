@@ -86,7 +86,7 @@ public final class GuildCommand implements CommandExecutor {
         messages.sendRaw(sender, "guild.info-header", "tag", guild.getTag(), "name", guild.getName());
         for (var entry : guild.getMembers().entrySet()) {
             String name = Bukkit.getOfflinePlayer(entry.getKey()).getName();
-            messages.sendRaw(sender, "guild.member-entry", "name", name, "role", entry.getValue());
+            messages.sendRaw(sender, "guild.member-entry", "name", name, "role", entry.getValue().getDisplayName());
         }
     }
 

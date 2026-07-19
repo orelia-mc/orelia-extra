@@ -52,9 +52,10 @@ public final class AuctionModule implements ExtraModule {
         this.auctionService = new AuctionService(repository, economy, mailModule.getMailService(), plugin.getMessageManager());
         auctionService.loadAll();
 
-        this.guiScreen = new AuctionGuiScreen(auctionService);
+        GuiManager guiManager = new GuiManager();
+        this.guiScreen = new AuctionGuiScreen(auctionService, guiManager, plugin.getMessageManager());
         plugin.getPlayerCommandRegistry().register("auction",
-                new AuctionCommand(auctionService, guiScreen, new GuiManager(), plugin.getMessageManager()),
+                new AuctionCommand(auctionService, guiScreen, guiManager, plugin.getMessageManager()),
                 "オークションを利用します。", "auction [list|sell <price>|collect]");
 
         plugin.getSchedulerService().runTimer(auctionService::expireOverdueListings,

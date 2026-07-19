@@ -56,7 +56,7 @@ public final class AuctionCommand implements CommandExecutor {
                     if (result == AuctionService.ActionResult.OK) {
                         messages.send(sender, "auction.listed");
                     } else {
-                        messages.send(sender, "auction.list-failed", "result", result);
+                        messages.send(sender, "auction.list-failed", "reason", messages.format(result.reasonMessageKey()));
                     }
                 } catch (NumberFormatException e) {
                     messages.send(sender, "auction.invalid-price");

@@ -1,7 +1,9 @@
 package rpg.extra.auction.model;
 
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -52,6 +54,25 @@ public final class AuctionListing {
 
     public ItemStack getItem() {
         return item;
+    }
+
+    /** A readable label for {@link #getItem()} - its custom display name if it has one, otherwise a title-cased Material name ("DIAMOND_SWORD" -> "Diamond Sword") instead of the raw enum constant. */
+    public String getDisplayName() {
+        if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
+            return PlainTextComponentSerializer.plainText().serialize(item.getItemMeta().displayName());
+        }
+        String[] words = item.getType().name().toLowerCase(Locale.ROOT).split("_");
+        StringBuilder result = new StringBuilder();
+        for (String word : words) {
+            if (word.isEmpty()) {
+                continue;
+            }
+            if (!result.isEmpty()) {
+                result.append(' ');
+            }
+            result.append(Character.toUpperCase(word.charAt(0))).append(word.substring(1));
+        }
+        return result.toString();
     }
 
     public double getPrice() {

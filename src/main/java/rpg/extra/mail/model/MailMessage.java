@@ -42,7 +42,7 @@ public final class MailMessage {
     }
 
     public String getSenderName() {
-        return senderName == null ? "System" : senderName;
+        return senderName == null ? "システム" : senderName;
     }
 
     public String getSubject() {
