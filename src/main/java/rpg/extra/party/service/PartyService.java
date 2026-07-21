@@ -14,7 +14,8 @@ import java.util.UUID;
 public final class PartyService {
 
     public enum ActionResult {
-        OK, ALREADY_IN_PARTY, NOT_IN_PARTY, NOT_LEADER, PARTY_FULL, TARGET_ALREADY_IN_PARTY, NO_PENDING_INVITE, CANNOT_TARGET_SELF
+        OK, ALREADY_IN_PARTY, NOT_IN_PARTY, NOT_LEADER, PARTY_FULL, TARGET_ALREADY_IN_PARTY, NO_PENDING_INVITE,
+        CANNOT_TARGET_SELF, LEADER_MUST_DISBAND
     }
 
     private final PartyManager manager;
@@ -67,14 +68,37 @@ public final class PartyService {
     }
 
     public ActionResult leave(Player player) {
-        if (manager.getByPlayer(player.getUniqueId()).isEmpty()) {
+        Party party = manager.getByPlayer(player.getUniqueId()).orElse(null);
+        if (party == null) {
             return ActionResult.NOT_IN_PARTY;
+        }
+        if (party.getLeaderId().equals(player.getUniqueId())) {
+            return ActionResult.LEADER_MUST_DISBAND;
         }
         manager.leaveParty(player.getUniqueId());
         return ActionResult.OK;
     }
 
+    /** Hands leadership to {@code newLeaderId} (must already be a member). */
+    public ActionResult transferLeadership(Player currentLeader, UUID newLeaderId) {
+        Party party = manager.getByPlayer(currentLeader.getUniqueId()).orElse(null);
+        if (party == null) {
+            return ActionResult.NOT_IN_PARTY;
+        }
+        if (!party.getLeaderId().equals(currentLeader.getUniqueId())) {
+            return ActionResult.NOT_LEADER;
+        }
+        if (!party.getMembers().contains(newLeaderId)) {
+            return ActionResult.NOT_IN_PARTY;
+        }
+        party.setLeaderId(newLeaderId);
+        return ActionResult.OK;
+    }
+
     public ActionResult kick(Player leader, UUID targetId) {
+        if (leader.getUniqueId().equals(targetId)) {
+            return ActionResult.CANNOT_TARGET_SELF;
+        }
         Party party = manager.getByPlayer(leader.getUniqueId()).orElse(null);
         if (party == null) {
             return ActionResult.NOT_IN_PARTY;

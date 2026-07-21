@@ -5,8 +5,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import rpg.core.command.Pagination;
+import rpg.core.command.TabCompletions;
 import rpg.core.message.MessageManager;
 import rpg.util.ColorUtil;
 import rpg.extra.chat.ChatBroadcast;
@@ -17,14 +19,18 @@ import rpg.extra.guild.service.GuildService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * {@code /ol guild create|invite|accept|leave|kick|promote|demote|disband|transfer|list|info|chat}
  * (SOW GuildModule).
  */
-public final class GuildCommand implements CommandExecutor {
+public final class GuildCommand implements CommandExecutor, TabCompleter {
 
     private static final int LIST_PAGE_SIZE = 15;
+    private static final List<String> SUBCOMMANDS = List.of(
+            "create", "invite", "accept", "leave", "kick", "promote", "demote", "disband", "transfer", "list", "info", "chat");
+    private static final List<String> MEMBER_TARGET_ACTIONS = List.of("kick", "promote", "demote", "transfer");
 
     private final GuildService guildService;
     private final MessageManager messages;
@@ -79,6 +85,42 @@ public final class GuildCommand implements CommandExecutor {
         return true;
     }
 
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length <= 1) {
+            return TabCompletions.matching(SUBCOMMANDS, args.length == 0 ? "" : args[0]);
+        }
+        if (args.length != 2 || !(sender instanceof Player player)) {
+            return List.of();
+        }
+        if (args[0].equalsIgnoreCase("invite")) {
+            return TabCompletions.onlinePlayerNames(args[1]);
+        }
+        if (MEMBER_TARGET_ACTIONS.stream().anyMatch(args[0]::equalsIgnoreCase)) {
+            return TabCompletions.matching(onlineMemberNames(player), args[1]);
+        }
+        return List.of();
+    }
+
+    /** Online guild members' names, excluding {@code viewer} themselves - used for kick/promote/demote/transfer tab completion. */
+    private List<String> onlineMemberNames(Player viewer) {
+        Guild guild = guildService.getGuild(viewer.getUniqueId()).orElse(null);
+        if (guild == null) {
+            return List.of();
+        }
+        List<String> names = new ArrayList<>();
+        for (UUID memberId : guild.getMembers().keySet()) {
+            if (memberId.equals(viewer.getUniqueId())) {
+                continue;
+            }
+            Player member = Bukkit.getPlayer(memberId);
+            if (member != null) {
+                names.add(member.getName());
+            }
+        }
+        return names;
+    }
+
     private void withTarget(CommandSender sender, Player player, String[] args, java.util.function.Consumer<Player> action) {
         if (args.length < 2) {
             messages.send(sender, "usage.guild-target", "action", args[0]);
@@ -128,7 +170,7 @@ public final class GuildCommand implements CommandExecutor {
                     "tag", guild.getTag(), "name", guild.getName(), "members", guild.getMembers().size())));
         }
         Pagination.send(sender, "&%6&lギルド一覧&%7 ({page}/{total}ページ)", lines, LIST_PAGE_SIZE, page,
-                "/ol guild list", "&%7登録されているギルドはありません。");
+                "/guild list", "&%7登録されているギルドはありません。");
     }
 
     private int parsePageOrDefault(String raw) {

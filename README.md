@@ -14,7 +14,7 @@ Orelia は 3 プラグイン構成です。
 
 全 11 モジュールが実装済みで、それぞれ `OreliaExtraPlugin#onEnable` に登録される `ExtraModule` として動作し、orelia-core / orelia-world とは公開 API(`rpg.api` / `rpg.world.api`)経由でのみ連携します(ゲームプレイモジュールの内部には触れません)。
 
-- **Party**(`/ol party`) — インメモリのパーティ機能(create/invite/accept/leave/kick/disband/chat)
+- **Party**(`/ol party`) — インメモリのパーティ機能(create/invite/accept/leave/kick/disband/transfer/chat。リーダーはleaveできずdisbandかtransferのみ)
 - **Guild**(`/ol guild`) — DB 永続化されたギルド(leader/officer/member ロール、list/transfer/chat)
 - **Chat**(`/ol chat`、トップレベル `/chat` エイリアス) — パブリック(デフォルト)/パーティー/ギルド/管理者の4チャンネルを切り替えるチャットチャンネル機能。`/oladmin chat <message>`・`/ol party chat <message>`・`/ol guild chat <message>` は現在の選択チャンネルを変えずに一度だけ送信する
 - **Trade**(`/ol trade`) — confirm/confirm ハンドシェイクによる 2 人間アイテム取引

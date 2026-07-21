@@ -4,19 +4,28 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import rpg.core.command.TabCompletions;
 import rpg.core.message.MessageManager;
 import rpg.extra.chat.ChatBroadcast;
 import rpg.extra.party.model.Party;
 import rpg.extra.party.service.PartyService;
 import rpg.util.ColorUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 /**
- * {@code /ol party create|invite|accept|leave|kick|disband|list|chat} (SOW PartyModule).
+ * {@code /ol party create|invite|accept|leave|kick|disband|transfer|list|chat} (SOW PartyModule).
  */
-public final class PartyCommand implements CommandExecutor {
+public final class PartyCommand implements CommandExecutor, TabCompleter {
+
+    private static final List<String> SUBCOMMANDS = List.of(
+            "create", "invite", "accept", "leave", "kick", "disband", "transfer", "list", "chat");
+    private static final List<String> MEMBER_TARGET_ACTIONS = List.of("kick", "transfer");
 
     private final PartyService partyService;
     private final MessageManager messages;
@@ -70,11 +79,59 @@ public final class PartyCommand implements CommandExecutor {
                 report(sender, partyService.kick(player, target.getUniqueId()), "party.kicked");
             }
             case "disband" -> report(sender, partyService.disband(player), "party.disbanded");
+            case "transfer" -> {
+                if (args.length < 2) {
+                    messages.send(sender, "usage.party-transfer");
+                    return true;
+                }
+                Player target = Bukkit.getPlayerExact(args[1]);
+                if (target == null) {
+                    messages.send(sender, "command.player-not-found", "player", args[1]);
+                    return true;
+                }
+                report(sender, partyService.transferLeadership(player, target.getUniqueId()), "party.leadership-transferred");
+            }
             case "list" -> listMembers(sender, player);
             case "chat" -> partyChat(sender, player, args);
             default -> messages.send(sender, "usage.party");
         }
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length <= 1) {
+            return TabCompletions.matching(SUBCOMMANDS, args.length == 0 ? "" : args[0]);
+        }
+        if (args.length != 2 || !(sender instanceof Player player)) {
+            return List.of();
+        }
+        if (args[0].equalsIgnoreCase("invite")) {
+            return TabCompletions.onlinePlayerNames(args[1]);
+        }
+        if (MEMBER_TARGET_ACTIONS.stream().anyMatch(args[0]::equalsIgnoreCase)) {
+            return TabCompletions.matching(onlineMemberNames(player), args[1]);
+        }
+        return List.of();
+    }
+
+    /** Online party members' names, excluding {@code viewer} themselves - used for the "kick"/"transfer" tab completion. */
+    private List<String> onlineMemberNames(Player viewer) {
+        Party party = partyService.getParty(viewer.getUniqueId()).orElse(null);
+        if (party == null) {
+            return List.of();
+        }
+        List<String> names = new ArrayList<>();
+        for (UUID memberId : party.getMembers()) {
+            if (memberId.equals(viewer.getUniqueId())) {
+                continue;
+            }
+            Player member = Bukkit.getPlayer(memberId);
+            if (member != null) {
+                names.add(member.getName());
+            }
+        }
+        return names;
     }
 
     private void partyChat(CommandSender sender, Player player, String[] args) {
@@ -120,6 +177,7 @@ public final class PartyCommand implements CommandExecutor {
             case TARGET_ALREADY_IN_PARTY -> "party.target-already-in-party";
             case NO_PENDING_INVITE -> "party.no-pending-invite";
             case CANNOT_TARGET_SELF -> "party.cannot-target-self";
+            case LEADER_MUST_DISBAND -> "party.leader-must-disband";
             case OK -> successKey;
         };
         messages.send(sender, key);

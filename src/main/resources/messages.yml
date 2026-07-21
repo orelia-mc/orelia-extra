@@ -11,9 +11,10 @@ command:
   ok: "&%aOK"
 
 usage:
-  party: "&%e使い方: /party &%7<&%ecreate&%7|&%einvite&%7|&%eaccept&%7|&%eleave&%7|&%ekick&%7|&%edisband&%7|&%elist&%7|&%echat&%7>&%e"
+  party: "&%e使い方: /party &%7<&%ecreate&%7|&%einvite&%7|&%eaccept&%7|&%eleave&%7|&%ekick&%7|&%edisband&%7|&%etransfer&%7|&%elist&%7|&%echat&%7>&%e"
   party-invite: "&%e使い方: /party invite &%7<&%eplayer&%7>&%e"
   party-kick: "&%e使い方: /party kick &%7<&%eplayer&%7>&%e"
+  party-transfer: "&%e使い方: /party transfer &%7<&%eplayer&%7>&%e"
   guild: "&%e使い方: /guild &%7<&%ecreate&%7|&%einvite&%7|&%eaccept&%7|&%eleave&%7|&%ekick&%7|&%epromote&%7|&%edemote&%7|&%edisband&%7|&%etransfer&%7|&%elist&%7|&%einfo&%7|&%echat&%7>&%e"
   guild-create: "&%e使い方: /guild create &%7<&%ename&%7>&%e &%7<&%etag&%7>&%e"
   guild-target: "&%e使い方: /guild {action} &%7<&%eplayer&%7>&%e"
@@ -48,6 +49,8 @@ party:
   target-already-in-party: "&%c対象は既に別のパーティーに所属しています。"
   no-pending-invite: "&%c招待が届いていません。"
   cannot-target-self: "&%c自分自身は対象にできません。"
+  leader-must-disband: "&%cリーダーはパーティーを脱退できません。解散する場合は /party disband を、リーダーを譲る場合は /party transfer &%7<&%eplayer&%7>&%e&%c を使ってください。"
+  leadership-transferred: "&%aリーダー権限を譲渡しました。"
 
 guild:
   created: "&%aギルドを作成しました。"
