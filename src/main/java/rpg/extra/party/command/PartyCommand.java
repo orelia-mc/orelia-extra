@@ -19,12 +19,13 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * {@code /ol party create|invite|accept|leave|kick|disband|list|chat} (SOW PartyModule).
+ * {@code /ol party create|invite|accept|leave|kick|disband|transfer|list|chat} (SOW PartyModule).
  */
 public final class PartyCommand implements CommandExecutor, TabCompleter {
 
     private static final List<String> SUBCOMMANDS = List.of(
-            "create", "invite", "accept", "leave", "kick", "disband", "list", "chat");
+            "create", "invite", "accept", "leave", "kick", "disband", "transfer", "list", "chat");
+    private static final List<String> MEMBER_TARGET_ACTIONS = List.of("kick", "transfer");
 
     private final PartyService partyService;
     private final MessageManager messages;
@@ -78,6 +79,18 @@ public final class PartyCommand implements CommandExecutor, TabCompleter {
                 report(sender, partyService.kick(player, target.getUniqueId()), "party.kicked");
             }
             case "disband" -> report(sender, partyService.disband(player), "party.disbanded");
+            case "transfer" -> {
+                if (args.length < 2) {
+                    messages.send(sender, "usage.party-transfer");
+                    return true;
+                }
+                Player target = Bukkit.getPlayerExact(args[1]);
+                if (target == null) {
+                    messages.send(sender, "command.player-not-found", "player", args[1]);
+                    return true;
+                }
+                report(sender, partyService.transferLeadership(player, target.getUniqueId()), "party.leadership-transferred");
+            }
             case "list" -> listMembers(sender, player);
             case "chat" -> partyChat(sender, player, args);
             default -> messages.send(sender, "usage.party");
@@ -96,13 +109,13 @@ public final class PartyCommand implements CommandExecutor, TabCompleter {
         if (args[0].equalsIgnoreCase("invite")) {
             return TabCompletions.onlinePlayerNames(args[1]);
         }
-        if (args[0].equalsIgnoreCase("kick")) {
+        if (MEMBER_TARGET_ACTIONS.stream().anyMatch(args[0]::equalsIgnoreCase)) {
             return TabCompletions.matching(onlineMemberNames(player), args[1]);
         }
         return List.of();
     }
 
-    /** Online party members' names, excluding {@code viewer} themselves - used for the "kick" tab completion. */
+    /** Online party members' names, excluding {@code viewer} themselves - used for the "kick"/"transfer" tab completion. */
     private List<String> onlineMemberNames(Player viewer) {
         Party party = partyService.getParty(viewer.getUniqueId()).orElse(null);
         if (party == null) {
@@ -164,6 +177,7 @@ public final class PartyCommand implements CommandExecutor, TabCompleter {
             case TARGET_ALREADY_IN_PARTY -> "party.target-already-in-party";
             case NO_PENDING_INVITE -> "party.no-pending-invite";
             case CANNOT_TARGET_SELF -> "party.cannot-target-self";
+            case LEADER_MUST_DISBAND -> "party.leader-must-disband";
             case OK -> successKey;
         };
         messages.send(sender, key);
