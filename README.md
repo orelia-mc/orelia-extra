@@ -4,7 +4,7 @@
 
 ## About
 
-`orelia-extra` は Minecraft RPG プラグイン群 **Orelia** の後発 MMORPG 機能プラグイン(Paper 1.21.x / Java 21)です。Party・Guild・Trade・Mail・Auction・Housing・Pet・Mount・Ranking・Achievement を提供します。
+`orelia-extra` は Minecraft RPG プラグイン群 **Orelia** の後発 MMORPG 機能プラグイン(Paper 1.21.x / Java 21)です。Party・Guild・Chat・Trade・Mail・Auction・Housing・Pet・Mount・Ranking・Achievement を提供します。
 
 Orelia は 3 プラグイン構成です。
 
@@ -12,10 +12,11 @@ Orelia は 3 プラグイン構成です。
 - [orelia-world](https://github.com/orelia-mc/orelia-world) — クエスト・NPC・ストーリーのコンテンツ層(ソフト依存)
 - **orelia-extra**(本リポジトリ) — 後発の MMORPG 系機能
 
-全 10 モジュールが実装済みで、それぞれ `OreliaExtraPlugin#onEnable` に登録される `ExtraModule` として動作し、orelia-core / orelia-world とは公開 API(`rpg.api` / `rpg.world.api`)経由でのみ連携します(ゲームプレイモジュールの内部には触れません)。
+全 11 モジュールが実装済みで、それぞれ `OreliaExtraPlugin#onEnable` に登録される `ExtraModule` として動作し、orelia-core / orelia-world とは公開 API(`rpg.api` / `rpg.world.api`)経由でのみ連携します(ゲームプレイモジュールの内部には触れません)。
 
-- **Party**(`/ol party`) — インメモリのパーティ機能(create/invite/accept/leave/kick/disband)
-- **Guild**(`/ol guild`) — DB 永続化されたギルド(leader/officer/member ロール)
+- **Party**(`/ol party`) — インメモリのパーティ機能(create/invite/accept/leave/kick/disband/chat)
+- **Guild**(`/ol guild`) — DB 永続化されたギルド(leader/officer/member ロール、list/transfer/chat)
+- **Chat**(`/ol chat`、トップレベル `/chat` エイリアス) — パブリック(デフォルト)/パーティー/ギルド/管理者の4チャンネルを切り替えるチャットチャンネル機能。`/oladmin chat <message>`・`/ol party chat <message>`・`/ol guild chat <message>` は現在の選択チャンネルを変えずに一度だけ送信する
 - **Trade**(`/ol trade`) — confirm/confirm ハンドシェイクによる 2 人間アイテム取引
 - **Mail**(`/ol mail`) — アイテム添付・GUI 受信箱付きの DB 永続化メールボックス
 - **Auction**(`/ol auction`) — 期限付き出品のプレイヤー主導オークションハウス(決済は Vault)

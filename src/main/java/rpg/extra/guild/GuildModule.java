@@ -49,10 +49,10 @@ public final class GuildModule implements ExtraModule {
         plugin.getServer().getPluginManager().registerEvents(new NpcGuildInteractListener(guildService, plugin.getMessageManager()), plugin);
         GuildCommand guildCommand = new GuildCommand(guildService, plugin.getMessageManager());
         String description = "ギルドを管理します。";
-        String usage = "guild <create|invite|accept|leave|kick|promote|demote|disband|transfer|list|info>";
+        String usage = "guild <create|invite|accept|leave|kick|promote|demote|disband|transfer|list|info|chat <message>>";
         plugin.getPlayerCommandRegistry().register("guild", guildCommand, description, usage);
         CommandAliasUtil.registerAlias(plugin, "guild", guildCommand, description,
-                "<create|invite|accept|leave|kick|promote|demote|disband|transfer|list|info>");
+                "<create|invite|accept|leave|kick|promote|demote|disband|transfer|list|info|chat <message>>");
     }
 
     @Override

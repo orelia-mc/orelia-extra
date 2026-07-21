@@ -9,15 +9,17 @@ import org.bukkit.entity.Player;
 import rpg.core.command.Pagination;
 import rpg.core.message.MessageManager;
 import rpg.util.ColorUtil;
+import rpg.extra.chat.ChatBroadcast;
 import rpg.extra.guild.model.Guild;
 import rpg.extra.guild.model.GuildRole;
 import rpg.extra.guild.service.GuildService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
- * {@code /ol guild create|invite|accept|leave|kick|promote|demote|disband|transfer|list|info}
+ * {@code /ol guild create|invite|accept|leave|kick|promote|demote|disband|transfer|list|info|chat}
  * (SOW GuildModule).
  */
 public final class GuildCommand implements CommandExecutor {
@@ -71,6 +73,7 @@ public final class GuildCommand implements CommandExecutor {
                     report(sender, guildService.transferLeadership(player, target.getUniqueId()), "guild.leadership-transferred"));
             case "list" -> showList(sender, args);
             case "info" -> showInfo(sender, player);
+            case "chat" -> guildChat(sender, player, args);
             default -> messages.send(sender, "usage.guild");
         }
         return true;
@@ -100,6 +103,21 @@ public final class GuildCommand implements CommandExecutor {
             String name = Bukkit.getOfflinePlayer(entry.getKey()).getName();
             messages.sendRaw(sender, "guild.member-entry", "name", name, "role", entry.getValue().getDisplayName());
         }
+    }
+
+    private void guildChat(CommandSender sender, Player player, String[] args) {
+        if (args.length < 2) {
+            messages.send(sender, "chat.usage-guild-chat");
+            return;
+        }
+        Guild guild = guildService.getGuild(player.getUniqueId()).orElse(null);
+        if (guild == null) {
+            messages.send(sender, "chat.not-in-guild");
+            return;
+        }
+        String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+        ChatBroadcast.toGuild(guild, ColorUtil.component(
+                messages.format("chat.guild-format", "sender", player.getName(), "message", message)));
     }
 
     private void showList(CommandSender sender, String[] args) {
