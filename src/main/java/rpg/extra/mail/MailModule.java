@@ -1,5 +1,6 @@
 package rpg.extra.mail;
 
+import rpg.core.command.CommandAliasUtil;
 import rpg.database.manager.DatabaseManager;
 import rpg.extra.core.OreliaExtraPlugin;
 import rpg.extra.core.module.ExtraModule;
@@ -42,9 +43,9 @@ public final class MailModule implements ExtraModule {
         GuiManager guiManager = new GuiManager();
         this.guiScreen = new MailGuiScreen(mailService, guiManager, plugin.getMessageManager());
 
-        plugin.getPlayerCommandRegistry().register("mail",
-                new MailCommand(mailService, guiScreen, guiManager, plugin.getMessageManager()),
-                "郵便受けを開きます。", "mail [unread]");
+        MailCommand mailCommand = new MailCommand(mailService, guiScreen, guiManager, plugin.getMessageManager());
+        plugin.getPlayerCommandRegistry().register("mail", mailCommand, "郵便受けを開きます。", "mail [unread]");
+        CommandAliasUtil.registerAlias(plugin, "mail", mailCommand, "郵便受けを開きます。", "[unread]");
     }
 
     @Override

@@ -1,5 +1,6 @@
 package rpg.extra.trade;
 
+import rpg.core.command.CommandAliasUtil;
 import rpg.extra.core.OreliaExtraPlugin;
 import rpg.extra.core.module.ExtraModule;
 import rpg.extra.trade.command.TradeCommand;
@@ -24,8 +25,12 @@ public final class TradeModule implements ExtraModule {
     public void onEnable(OreliaExtraPlugin plugin) {
         this.tradeService = new TradeService(manager);
         plugin.getServer().getPluginManager().registerEvents(new TradeQuitListener(tradeService, plugin.getMessageManager()), plugin);
-        plugin.getPlayerCommandRegistry().register("trade", new TradeCommand(tradeService, plugin.getMessageManager()),
-                "他プレイヤーとアイテムを取引します。", "trade <player>|accept|add|remove <index>|confirm|cancel|view");
+        TradeCommand tradeCommand = new TradeCommand(tradeService, plugin.getMessageManager());
+        String description = "他プレイヤーとアイテムを取引します。";
+        String usage = "trade <player>|accept|add|remove <index>|confirm|cancel|view";
+        plugin.getPlayerCommandRegistry().register("trade", tradeCommand, description, usage);
+        CommandAliasUtil.registerAlias(plugin, "trade", tradeCommand, description,
+                "<player>|accept|add|remove <index>|confirm|cancel|view");
     }
 
     @Override

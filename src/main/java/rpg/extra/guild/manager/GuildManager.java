@@ -4,7 +4,9 @@ import rpg.extra.guild.model.Guild;
 import rpg.extra.guild.model.GuildRole;
 import rpg.extra.guild.repository.GuildRepository;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -44,6 +46,10 @@ public final class GuildManager {
 
     public Optional<Guild> getByPlayer(UUID playerId) {
         return Optional.ofNullable(playerToGuild.get(playerId)).map(guildsById::get);
+    }
+
+    public Collection<Guild> getAll() {
+        return List.copyOf(guildsById.values());
     }
 
     public void invite(UUID guildId, UUID inviteeId) {

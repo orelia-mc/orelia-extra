@@ -46,9 +46,14 @@ public final class Guild {
         return leaderId;
     }
 
+    /** Sets a new leader, demoting the previous leader (if still a member) to {@link GuildRole#OFFICER}. */
     public void setLeaderId(UUID leaderId) {
+        UUID previousLeaderId = this.leaderId;
         this.leaderId = leaderId;
         members.put(leaderId, GuildRole.LEADER);
+        if (previousLeaderId != null && !previousLeaderId.equals(leaderId) && members.containsKey(previousLeaderId)) {
+            members.put(previousLeaderId, GuildRole.OFFICER);
+        }
     }
 
     public Map<UUID, GuildRole> getMembers() {

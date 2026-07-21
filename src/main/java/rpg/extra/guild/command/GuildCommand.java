@@ -1,19 +1,28 @@
 package rpg.extra.guild.command;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import rpg.core.command.Pagination;
 import rpg.core.message.MessageManager;
+import rpg.util.ColorUtil;
 import rpg.extra.guild.model.Guild;
 import rpg.extra.guild.model.GuildRole;
 import rpg.extra.guild.service.GuildService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * {@code /ol guild create|invite|accept|leave|kick|promote|demote|disband|info} (SOW GuildModule).
+ * {@code /ol guild create|invite|accept|leave|kick|promote|demote|disband|transfer|list|info}
+ * (SOW GuildModule).
  */
 public final class GuildCommand implements CommandExecutor {
+
+    private static final int LIST_PAGE_SIZE = 15;
 
     private final GuildService guildService;
     private final MessageManager messages;
@@ -58,6 +67,9 @@ public final class GuildCommand implements CommandExecutor {
             case "demote" -> withTarget(sender, player, args, target ->
                     report(sender, guildService.setRole(player, target.getUniqueId(), GuildRole.MEMBER), "guild.demoted"));
             case "disband" -> report(sender, guildService.disband(player), "guild.disbanded");
+            case "transfer" -> withTarget(sender, player, args, target ->
+                    report(sender, guildService.transferLeadership(player, target.getUniqueId()), "guild.leadership-transferred"));
+            case "list" -> showList(sender, args);
             case "info" -> showInfo(sender, player);
             default -> messages.send(sender, "usage.guild");
         }
@@ -90,6 +102,25 @@ public final class GuildCommand implements CommandExecutor {
         }
     }
 
+    private void showList(CommandSender sender, String[] args) {
+        int page = args.length >= 2 ? parsePageOrDefault(args[1]) : 1;
+        List<Component> lines = new ArrayList<>();
+        for (Guild guild : guildService.getAllGuilds()) {
+            lines.add(ColorUtil.component(messages.format("guild.list-entry",
+                    "tag", guild.getTag(), "name", guild.getName(), "members", guild.getMembers().size())));
+        }
+        Pagination.send(sender, "&%6&lギルド一覧&%7 ({page}/{total}ページ)", lines, LIST_PAGE_SIZE, page,
+                "/ol guild list", "&%7登録されているギルドはありません。");
+    }
+
+    private int parsePageOrDefault(String raw) {
+        try {
+            return Integer.parseInt(raw);
+        } catch (NumberFormatException e) {
+            return 1;
+        }
+    }
+
     private void report(CommandSender sender, GuildService.ActionResult result, String successKey) {
         if (result == GuildService.ActionResult.OK) {
             messages.send(sender, successKey);
@@ -103,6 +134,10 @@ public final class GuildCommand implements CommandExecutor {
             case NO_PENDING_INVITE -> "guild.no-pending-invite";
             case CANNOT_TARGET_SELF -> "guild.cannot-target-self";
             case CANNOT_TARGET_LEADER -> "guild.cannot-target-leader";
+            case LEADER_MUST_DISBAND -> "guild.leader-must-disband";
+            case NAME_TAKEN -> "guild.name-taken";
+            case TAG_TAKEN -> "guild.tag-taken";
+            case TARGET_NOT_MEMBER -> "guild.target-not-member";
             case OK -> successKey;
         };
         messages.send(sender, key);

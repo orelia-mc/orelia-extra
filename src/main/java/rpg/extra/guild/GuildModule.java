@@ -1,5 +1,6 @@
 package rpg.extra.guild;
 
+import rpg.core.command.CommandAliasUtil;
 import rpg.database.manager.DatabaseManager;
 import rpg.extra.core.OreliaExtraPlugin;
 import rpg.extra.core.module.ExtraModule;
@@ -46,8 +47,12 @@ public final class GuildModule implements ExtraModule {
 
         plugin.getServer().getPluginManager().registerEvents(new GuildQuitListener(manager), plugin);
         plugin.getServer().getPluginManager().registerEvents(new NpcGuildInteractListener(guildService, plugin.getMessageManager()), plugin);
-        plugin.getPlayerCommandRegistry().register("guild", new GuildCommand(guildService, plugin.getMessageManager()),
-                "ギルドを管理します。", "guild <create|invite|accept|leave|kick|promote|demote|disband|info>");
+        GuildCommand guildCommand = new GuildCommand(guildService, plugin.getMessageManager());
+        String description = "ギルドを管理します。";
+        String usage = "guild <create|invite|accept|leave|kick|promote|demote|disband|transfer|list|info>";
+        plugin.getPlayerCommandRegistry().register("guild", guildCommand, description, usage);
+        CommandAliasUtil.registerAlias(plugin, "guild", guildCommand, description,
+                "<create|invite|accept|leave|kick|promote|demote|disband|transfer|list|info>");
     }
 
     @Override

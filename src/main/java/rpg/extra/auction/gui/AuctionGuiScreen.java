@@ -10,9 +10,9 @@ import rpg.gui.framework.GuiButton;
 import rpg.gui.framework.GuiManager;
 import rpg.util.ColorUtil;
 import rpg.util.ItemBuilder;
+import rpg.util.MoneyFormat;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Browse/buy screen for active auction listings (SOW AuctionModule). Reuses orelia-core's
@@ -44,7 +44,7 @@ public final class AuctionGuiScreen {
                     .name((own ? "&%e" : "&%f") + listing.getDisplayName())
                     .lore(List.of(
                             "&%7出品者: &%f" + listing.getSellerName(),
-                            "&%7価格: &%6" + formatPrice(listing.getPrice()),
+                            "&%7価格: &%6" + MoneyFormat.format(listing.getPrice()),
                             own ? "&%cクリックでキャンセル" : "&%aクリックで購入"))
                     .build(), (clicker, clickType) -> {
                 if (own) {
@@ -57,7 +57,7 @@ public final class AuctionGuiScreen {
                 } else {
                     AuctionService.ActionResult result = auctionService.buy(clicker, listing.getId());
                     if (result == AuctionService.ActionResult.OK) {
-                        messages.send(clicker, "auction.bought", "item", listing.getDisplayName(), "price", formatPrice(listing.getPrice()));
+                        messages.send(clicker, "auction.bought", "item", listing.getDisplayName(), "price", MoneyFormat.format(listing.getPrice()));
                     } else {
                         messages.send(clicker, "auction.buy-failed", "reason", messages.format(result.reasonMessageKey()));
                     }
@@ -73,9 +73,5 @@ public final class AuctionGuiScreen {
             }));
         }
         return gui;
-    }
-
-    private String formatPrice(double price) {
-        return price == Math.rint(price) ? String.valueOf((long) price) : String.format(Locale.ROOT, "%.1f", price);
     }
 }
