@@ -4,7 +4,7 @@
 
 ## About
 
-`orelia-extra` is the later MMORPG-feature plugin (Paper 1.21.x / Java 21) of the Minecraft RPG plugin suite **Orelia** — Party, Guild, Trade, Mail, Auction, Housing, Pet, Mount, Ranking, Achievement.
+`orelia-extra` is the later MMORPG-feature plugin (Paper 1.21.x / Java 21) of the Minecraft RPG plugin suite **Orelia** — Party, Guild, Chat, Trade, Mail, Auction, Housing, Pet, Mount, Ranking, Achievement.
 
 Orelia is split into 3 plugins:
 
@@ -12,10 +12,11 @@ Orelia is split into 3 plugins:
 - [orelia-world](https://github.com/orelia-mc/orelia-world) — quest/NPC/story content layer (soft dependency)
 - **orelia-extra** (this repo) — later MMORPG features
 
-All 10 modules are implemented, each as an `ExtraModule` registered in `OreliaExtraPlugin#onEnable`, talking to orelia-core/orelia-world only through their published `rpg.api`/`rpg.world.api` interfaces (never gameplay-module internals):
+All 11 modules are implemented, each as an `ExtraModule` registered in `OreliaExtraPlugin#onEnable`, talking to orelia-core/orelia-world only through their published `rpg.api`/`rpg.world.api` interfaces (never gameplay-module internals):
 
-- **Party** (`/ol party`) — in-memory party grouping (create/invite/accept/leave/kick/disband)
-- **Guild** (`/ol guild`) — DB-persisted guilds with leader/officer/member roles
+- **Party** (`/ol party`) — in-memory party grouping (create/invite/accept/leave/kick/disband/chat)
+- **Guild** (`/ol guild`) — DB-persisted guilds with leader/officer/member roles (list/transfer/chat)
+- **Chat** (`/ol chat`, also aliased to top-level `/chat`) — switch between four chat channels: public (default)/party/guild/admin. `/oladmin chat <message>`/`/ol party chat <message>`/`/ol guild chat <message>` send a one-off message without changing the sender's selected channel
 - **Trade** (`/ol trade`) — two-player item trading with a confirm/confirm handshake
 - **Mail** (`/ol mail`) — DB-persisted mailbox with item attachments, GUI inbox
 - **Auction** (`/ol auction`) — player-run auction house with timed listings, settles via Vault

@@ -6,11 +6,15 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import rpg.core.message.MessageManager;
+import rpg.extra.chat.ChatBroadcast;
 import rpg.extra.party.model.Party;
 import rpg.extra.party.service.PartyService;
+import rpg.util.ColorUtil;
+
+import java.util.Arrays;
 
 /**
- * {@code /ol party create|invite|accept|leave|kick|disband|list} (SOW PartyModule).
+ * {@code /ol party create|invite|accept|leave|kick|disband|list|chat} (SOW PartyModule).
  */
 public final class PartyCommand implements CommandExecutor {
 
@@ -67,9 +71,25 @@ public final class PartyCommand implements CommandExecutor {
             }
             case "disband" -> report(sender, partyService.disband(player), "party.disbanded");
             case "list" -> listMembers(sender, player);
+            case "chat" -> partyChat(sender, player, args);
             default -> messages.send(sender, "usage.party");
         }
         return true;
+    }
+
+    private void partyChat(CommandSender sender, Player player, String[] args) {
+        if (args.length < 2) {
+            messages.send(sender, "chat.usage-party-chat");
+            return;
+        }
+        Party party = partyService.getParty(player.getUniqueId()).orElse(null);
+        if (party == null) {
+            messages.send(sender, "chat.not-in-party");
+            return;
+        }
+        String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+        ChatBroadcast.toParty(party, ColorUtil.component(
+                messages.format("chat.party-format", "sender", player.getName(), "message", message)));
     }
 
     private void listMembers(CommandSender sender, Player player) {

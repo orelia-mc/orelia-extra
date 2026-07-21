@@ -11,6 +11,7 @@ import rpg.core.scheduler.SchedulerService;
 import rpg.extra.achievement.AchievementModule;
 import rpg.extra.api.ExtraApiModule;
 import rpg.extra.auction.AuctionModule;
+import rpg.extra.chat.ChatModule;
 import rpg.extra.core.command.ExtraAdminCommand;
 import rpg.extra.core.module.ExtraModuleManager;
 import rpg.extra.guild.GuildModule;
@@ -39,6 +40,7 @@ public final class OreliaExtraPlugin extends JavaPlugin {
     private SchedulerService schedulerService;
     private PlayerDataManager playerDataManager;
     private PlayerCommandRegistry playerCommandRegistry;
+    private AdminCommandRegistry adminCommandRegistry;
     private ExtraModuleManager moduleManager;
 
     @Override
@@ -64,6 +66,7 @@ public final class OreliaExtraPlugin extends JavaPlugin {
             return;
         }
         this.playerCommandRegistry = playerCommandRegistration.getProvider();
+        this.adminCommandRegistry = adminCommandRegistration.getProvider();
 
         this.configManager = new ConfigManager(this);
         this.configManager.register("config.yml");
@@ -72,11 +75,12 @@ public final class OreliaExtraPlugin extends JavaPlugin {
         this.schedulerService = new SchedulerService(this);
         this.moduleManager = new ExtraModuleManager(this);
 
-        adminCommandRegistration.getProvider().register("extrareload", new ExtraAdminCommand(this),
+        adminCommandRegistry.register("extrareload", new ExtraAdminCommand(this),
                 "orelia-extra の設定を再読み込みします。", "extrareload");
 
         moduleManager.register(new PartyModule());
         moduleManager.register(new GuildModule());
+        moduleManager.register(new ChatModule());
         moduleManager.register(new TradeModule());
         moduleManager.register(new MailModule());
         moduleManager.register(new AuctionModule());
@@ -123,5 +127,9 @@ public final class OreliaExtraPlugin extends JavaPlugin {
 
     public PlayerCommandRegistry getPlayerCommandRegistry() {
         return playerCommandRegistry;
+    }
+
+    public AdminCommandRegistry getAdminCommandRegistry() {
+        return adminCommandRegistry;
     }
 }

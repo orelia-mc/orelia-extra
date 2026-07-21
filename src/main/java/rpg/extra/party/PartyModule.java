@@ -30,10 +30,10 @@ public final class PartyModule implements ExtraModule {
         plugin.getServer().getPluginManager().registerEvents(new PartyQuitListener(manager), plugin);
         PartyCommand partyCommand = new PartyCommand(partyService, plugin.getMessageManager());
         String description = "パーティーを管理します。";
-        String usage = "party <create|invite|accept|leave|kick|disband|list>";
+        String usage = "party <create|invite|accept|leave|kick|disband|list|chat <message>>";
         plugin.getPlayerCommandRegistry().register("party", partyCommand, description, usage);
         CommandAliasUtil.registerAlias(plugin, "party", partyCommand, description,
-                "<create|invite|accept|leave|kick|disband|list>");
+                "<create|invite|accept|leave|kick|disband|list|chat <message>>");
     }
 
     @Override

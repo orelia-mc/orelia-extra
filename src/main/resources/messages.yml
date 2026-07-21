@@ -11,10 +11,10 @@ command:
   ok: "&%aOK"
 
 usage:
-  party: "&%e使い方: /ol party &%7<&%ecreate&%7|&%einvite&%7|&%eaccept&%7|&%eleave&%7|&%ekick&%7|&%edisband&%7|&%elist&%7>&%e"
+  party: "&%e使い方: /ol party &%7<&%ecreate&%7|&%einvite&%7|&%eaccept&%7|&%eleave&%7|&%ekick&%7|&%edisband&%7|&%elist&%7|&%echat&%7>&%e"
   party-invite: "&%e使い方: /ol party invite &%7<&%eplayer&%7>&%e"
   party-kick: "&%e使い方: /ol party kick &%7<&%eplayer&%7>&%e"
-  guild: "&%e使い方: /ol guild &%7<&%ecreate&%7|&%einvite&%7|&%eaccept&%7|&%eleave&%7|&%ekick&%7|&%epromote&%7|&%edemote&%7|&%edisband&%7|&%etransfer&%7|&%elist&%7|&%einfo&%7>&%e"
+  guild: "&%e使い方: /ol guild &%7<&%ecreate&%7|&%einvite&%7|&%eaccept&%7|&%eleave&%7|&%ekick&%7|&%epromote&%7|&%edemote&%7|&%edisband&%7|&%etransfer&%7|&%elist&%7|&%einfo&%7|&%echat&%7>&%e"
   guild-create: "&%e使い方: /ol guild create &%7<&%ename&%7>&%e &%7<&%etag&%7>&%e"
   guild-target: "&%e使い方: /ol guild {action} &%7<&%eplayer&%7>&%e"
   trade: "&%e使い方: /ol trade &%7<&%eplayer&%7>&%e&%7|&%eaccept&%7|&%eadd&%7|&%eremove &%7<&%eindex&%7>&%e&%7|&%econfirm&%7|&%ecancel&%7|&%eview"
@@ -166,6 +166,25 @@ achievement:
   status-done: "&%6[済]"
   status-pending: "&%7[未]"
   unlocked: "&%6実績解除: &%e{name}"
+
+chat:
+  usage: "&%e使い方: /ol chat &%7<&%epublic&%7|&%eparty&%7|&%eguild&%7|&%eadmin&%7>&%e"
+  usage-party-chat: "&%e使い方: /ol party chat &%7<&%emessage&%7>&%e"
+  usage-guild-chat: "&%e使い方: /ol guild chat &%7<&%emessage&%7>&%e"
+  usage-admin-chat: "&%e使い方: /oladmin chat &%7<&%emessage&%7>&%e"
+  current-channel: "&%7現在のチャットチャンネル: &%f{channel}"
+  switched: "&%aチャットチャンネルを&%f{channel}&%aに切り替えました。"
+  invalid-channel: "&%c不明なチャンネルです: {channel}"
+  party-required: "&%cパーティーに所属していないため、パーティーチャットに切り替えられません。"
+  guild-required: "&%cギルドに所属していないため、ギルドチャットに切り替えられません。"
+  admin-permission-required: "&%c権限がありません。"
+  not-in-party: "&%cパーティーに所属していません。"
+  not-in-guild: "&%cギルドに所属していません。"
+  reverted-party: "&%cパーティーに所属していないため、パブリックチャットに戻しました。"
+  reverted-guild: "&%cギルドに所属していないため、パブリックチャットに戻しました。"
+  party-format: "&%9[パーティー] &%f{sender}&%7: &%f{message}"
+  guild-format: "&%a[ギルド] &%f{sender}&%7: &%f{message}"
+  admin-format: "&%c[管理者] &%f{sender}&%7: &%f{message}"
 
 admin:
   reloaded: "&%aOrelia Extra の設定を再読み込みしました。"
