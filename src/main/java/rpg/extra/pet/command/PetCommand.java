@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import rpg.core.message.MessageManager;
 import rpg.extra.pet.model.PetDefinition;
 import rpg.extra.pet.service.PetService;
+import rpg.util.MoneyFormat;
 
 import java.util.Map;
 import java.util.Set;
@@ -67,7 +68,7 @@ public final class PetCommand implements CommandExecutor {
         messages.send(sender, "pet.list-header");
         all.values().forEach(pet -> {
             boolean owned = unlocked.contains(pet.getId());
-            String status = owned ? messages.format("pet.owned-tag") : messages.format("pet.price-tag", "price", pet.getPrice());
+            String status = owned ? messages.format("pet.owned-tag") : messages.format("pet.price-tag", "price", MoneyFormat.format(pet.getPrice()));
             messages.sendRaw(sender, "pet.list-entry", "id", pet.getId(), "name", pet.getName(), "status", status);
         });
     }

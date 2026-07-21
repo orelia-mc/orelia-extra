@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import rpg.core.message.MessageManager;
 import rpg.extra.mount.model.MountDefinition;
 import rpg.extra.mount.service.MountService;
+import rpg.util.MoneyFormat;
 
 import java.util.Map;
 import java.util.Set;
@@ -67,7 +68,7 @@ public final class MountCommand implements CommandExecutor {
         messages.send(sender, "mount.list-header");
         all.values().forEach(mount -> {
             boolean owned = unlocked.contains(mount.getId());
-            String status = owned ? messages.format("mount.owned-tag") : messages.format("mount.price-tag", "price", mount.getPrice());
+            String status = owned ? messages.format("mount.owned-tag") : messages.format("mount.price-tag", "price", MoneyFormat.format(mount.getPrice()));
             messages.sendRaw(sender, "mount.list-entry", "id", mount.getId(), "name", mount.getName(), "status", status);
         });
     }

@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import rpg.core.message.MessageManager;
 import rpg.extra.housing.model.HousePlot;
 import rpg.extra.housing.service.HousingService;
+import rpg.util.MoneyFormat;
 
 import java.util.Map;
 
@@ -43,7 +44,7 @@ public final class HousingCommand implements CommandExecutor {
                 }
                 messages.send(sender, "housing.available-header");
                 available.values().forEach(plot -> messages.sendRaw(sender, "housing.plot-entry",
-                        "id", plot.getId(), "name", plot.getName(), "price", plot.getPrice()));
+                        "id", plot.getId(), "name", plot.getName(), "price", MoneyFormat.format(plot.getPrice())));
             }
             case "buy" -> {
                 if (args.length < 2) {

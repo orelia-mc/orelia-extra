@@ -4,6 +4,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.configuration.file.YamlConfiguration;
 import rpg.api.SkillApi;
 import rpg.api.StatusApi;
+import rpg.core.command.CommandAliasUtil;
 import rpg.database.manager.DatabaseManager;
 import rpg.extra.achievement.command.AchievementCommand;
 import rpg.extra.achievement.listener.AchievementJoinListener;
@@ -65,9 +66,9 @@ public final class AchievementModule implements ExtraModule {
         achievementService.loadAll();
 
         plugin.getServer().getPluginManager().registerEvents(new AchievementJoinListener(achievementService), plugin);
-        plugin.getPlayerCommandRegistry().register("achievement",
-                new AchievementCommand(achievementService, plugin.getMessageManager()),
-                "実績一覧を表示します。", "achievement");
+        AchievementCommand achievementCommand = new AchievementCommand(achievementService, plugin.getMessageManager());
+        plugin.getPlayerCommandRegistry().register("achievement", achievementCommand, "実績一覧を表示します。", "achievement [page]");
+        CommandAliasUtil.registerAlias(plugin, "achievement", achievementCommand, "実績一覧を表示します。", "[page]");
 
         plugin.getSchedulerService().runTimer(achievementService::checkAll, CHECK_PERIOD_TICKS, CHECK_PERIOD_TICKS);
     }

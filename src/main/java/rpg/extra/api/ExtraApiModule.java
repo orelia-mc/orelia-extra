@@ -4,7 +4,9 @@ import org.bukkit.plugin.ServicePriority;
 import rpg.extra.auction.AuctionModule;
 import rpg.extra.core.OreliaExtraPlugin;
 import rpg.extra.core.module.ExtraModule;
+import rpg.extra.guild.GuildModule;
 import rpg.extra.mail.MailModule;
+import rpg.extra.party.PartyModule;
 import rpg.extra.ranking.RankingModule;
 
 /**
@@ -24,11 +26,17 @@ public final class ExtraApiModule implements ExtraModule {
         AuctionModule auctionModule = require(plugin, AuctionModule.class);
         MailModule mailModule = require(plugin, MailModule.class);
         RankingModule rankingModule = require(plugin, RankingModule.class);
+        GuildModule guildModule = require(plugin, GuildModule.class);
+        PartyModule partyModule = require(plugin, PartyModule.class);
 
         plugin.getServer().getServicesManager().register(
                 ExtraDebugApi.class,
                 new ExtraDebugApiImpl(plugin.getConfigManager(), auctionModule, mailModule, rankingModule),
                 plugin, ServicePriority.Normal);
+        plugin.getServer().getServicesManager().register(
+                GuildApi.class, new GuildApiImpl(guildModule.getGuildService()), plugin, ServicePriority.Normal);
+        plugin.getServer().getServicesManager().register(
+                PartyApi.class, new PartyApiImpl(partyModule.getPartyService()), plugin, ServicePriority.Normal);
     }
 
     @Override

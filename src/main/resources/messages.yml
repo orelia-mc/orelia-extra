@@ -14,7 +14,7 @@ usage:
   party: "&%e使い方: /ol party &%7<&%ecreate&%7|&%einvite&%7|&%eaccept&%7|&%eleave&%7|&%ekick&%7|&%edisband&%7|&%elist&%7>&%e"
   party-invite: "&%e使い方: /ol party invite &%7<&%eplayer&%7>&%e"
   party-kick: "&%e使い方: /ol party kick &%7<&%eplayer&%7>&%e"
-  guild: "&%e使い方: /ol guild &%7<&%ecreate&%7|&%einvite&%7|&%eaccept&%7|&%eleave&%7|&%ekick&%7|&%epromote&%7|&%edemote&%7|&%edisband&%7|&%einfo&%7>&%e"
+  guild: "&%e使い方: /ol guild &%7<&%ecreate&%7|&%einvite&%7|&%eaccept&%7|&%eleave&%7|&%ekick&%7|&%epromote&%7|&%edemote&%7|&%edisband&%7|&%etransfer&%7|&%elist&%7|&%einfo&%7>&%e"
   guild-create: "&%e使い方: /ol guild create &%7<&%ename&%7>&%e &%7<&%etag&%7>&%e"
   guild-target: "&%e使い方: /ol guild {action} &%7<&%eplayer&%7>&%e"
   trade: "&%e使い方: /ol trade &%7<&%eplayer&%7>&%e&%7|&%eaccept&%7|&%eadd&%7|&%eremove &%7<&%eindex&%7>&%e&%7|&%econfirm&%7|&%ecancel&%7|&%eview"
@@ -68,8 +68,14 @@ guild:
   no-pending-invite: "&%c招待が届いていません。"
   cannot-target-self: "&%c自分自身は対象にできません。"
   cannot-target-leader: "&%cリーダーを対象にはできません。"
+  leader-must-disband: "&%cリーダーはギルドを脱退できません。解散する場合は /ol guild disband を、リーダーを譲る場合は /ol guild transfer &%7<&%eplayer&%7>&%e&%c を使ってください。"
+  name-taken: "&%cそのギルド名は既に使われています。"
+  tag-taken: "&%cそのギルドタグは既に使われています。"
+  target-not-member: "&%c対象はこのギルドのメンバーではありません。"
+  leadership-transferred: "&%aリーダー権限を譲渡しました。"
   npc-summary: "&%a[{tag}] {name} &%7- あなたの役職: {role} (メンバー数: {members})"
   npc-no-guild: "&%eギルドに未所属です。/ol guild create &%7<&%ename&%7>&%e &%7<&%etag&%7>&%e で作成できます。"
+  list-entry: "&%a[{tag}] {name} &%7- メンバー数: {members}"
 
 trade:
   started: "&%a取引を開始しました。/ol trade add でアイテムを追加できます。"
