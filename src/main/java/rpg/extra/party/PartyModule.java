@@ -9,8 +9,8 @@ import rpg.extra.party.manager.PartyManager;
 import rpg.extra.party.service.PartyService;
 
 /**
- * Party module: runtime (not persisted) player groups - create/invite/accept/leave/kick/
- * disband/transfer (SOW PartyModule).
+ * Party module: runtime (not persisted) player groups - create/invite/accept/decline/leave/
+ * kick/disband/transfer (SOW PartyModule).
  */
 public final class PartyModule implements ExtraModule {
 
@@ -30,10 +30,10 @@ public final class PartyModule implements ExtraModule {
         plugin.getServer().getPluginManager().registerEvents(new PartyQuitListener(manager), plugin);
         PartyCommand partyCommand = new PartyCommand(partyService, plugin.getMessageManager());
         String description = "パーティーを管理します。";
-        String usage = "party <create|invite|accept|leave|kick|disband|transfer|list|chat <message>>";
+        String usage = "party <create|invite|accept|decline|leave|kick|disband|transfer|list|chat <message>>";
         plugin.getPlayerCommandRegistry().register("party", partyCommand, description, usage);
         CommandAliasUtil.registerAlias(plugin, "party", partyCommand, description,
-                "<create|invite|accept|leave|kick|disband|transfer|list|chat <message>>");
+                "<create|invite|accept|decline|leave|kick|disband|transfer|list|chat <message>>");
     }
 
     @Override

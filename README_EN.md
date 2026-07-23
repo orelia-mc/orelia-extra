@@ -14,7 +14,7 @@ Orelia is split into 3 plugins:
 
 All 11 modules are implemented, each as an `ExtraModule` registered in `OreliaExtraPlugin#onEnable`, talking to orelia-core/orelia-world only through their published `rpg.api`/`rpg.world.api` interfaces (never gameplay-module internals):
 
-- **Party** (`/ol party`) — in-memory party grouping (create/invite/accept/leave/kick/disband/transfer/chat; the leader can't leave, only disband or transfer)
+- **Party** (`/ol party`) — in-memory party grouping (create/invite/accept/decline/leave/kick/disband/transfer/chat; the leader can't leave, only disband or transfer). Receiving an invite shows clickable "Accept"/"Decline" chat text so it can be answered with a single click
 - **Guild** (`/ol guild`) — DB-persisted guilds with leader/officer/member roles (list/transfer/chat)
 - **Chat** (`/ol chat`, also aliased to top-level `/chat`) — switch between four chat channels: public (default)/party/guild/admin. `/oladmin chat <message>`/`/ol party chat <message>`/`/ol guild chat <message>` send a one-off message without changing the sender's selected channel
 - **Trade** (`/ol trade`) — two-player item trading with a confirm/confirm handshake
