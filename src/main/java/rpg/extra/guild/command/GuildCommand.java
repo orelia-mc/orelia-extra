@@ -63,18 +63,48 @@ public final class GuildCommand implements CommandExecutor, TabCompleter {
                 GuildService.ActionResult result = guildService.invite(player, target);
                 report(sender, result, "guild.invited");
                 if (result == GuildService.ActionResult.OK) {
-                    messages.send(target, "guild.invite-received", "player", player.getName());
+                    target.sendMessage(ColorUtil.componentWithCommand(
+                            messages.getPrefix() + messages.format("guild.invite-received", "player", player.getName()),
+                            "/guild accept"));
                 }
             });
-            case "accept" -> report(sender, guildService.accept(player), "guild.accepted");
-            case "leave" -> report(sender, guildService.leave(player), "guild.left");
-            case "kick" -> withTarget(sender, player, args, target ->
-                    report(sender, guildService.kick(player, target.getUniqueId()), "guild.kicked"));
+            case "accept" -> {
+                GuildService.ActionResult result = guildService.accept(player);
+                report(sender, result, "guild.accepted");
+                if (result == GuildService.ActionResult.OK) {
+                    guildService.getGuild(player.getUniqueId())
+                            .ifPresent(guild -> broadcastToGuild(guild, player.getUniqueId(), "guild.member-joined", "player", player.getName()));
+                }
+            }
+            case "leave" -> {
+                Guild guild = guildService.getGuild(player.getUniqueId()).orElse(null);
+                GuildService.ActionResult result = guildService.leave(player);
+                report(sender, result, "guild.left");
+                if (result == GuildService.ActionResult.OK && guild != null) {
+                    broadcastToGuild(guild, player.getUniqueId(), "guild.member-left", "player", player.getName());
+                }
+            }
+            case "kick" -> withTarget(sender, player, args, target -> {
+                GuildService.ActionResult result = guildService.kick(player, target.getUniqueId());
+                report(sender, result, "guild.kicked");
+                if (result == GuildService.ActionResult.OK) {
+                    messages.send(target, "guild.kicked-notice");
+                    guildService.getGuild(player.getUniqueId())
+                            .ifPresent(guild -> broadcastToGuild(guild, player.getUniqueId(), "guild.member-left", "player", target.getName()));
+                }
+            });
             case "promote" -> withTarget(sender, player, args, target ->
                     report(sender, guildService.setRole(player, target.getUniqueId(), GuildRole.OFFICER), "guild.promoted"));
             case "demote" -> withTarget(sender, player, args, target ->
                     report(sender, guildService.setRole(player, target.getUniqueId(), GuildRole.MEMBER), "guild.demoted"));
-            case "disband" -> report(sender, guildService.disband(player), "guild.disbanded");
+            case "disband" -> {
+                Guild guild = guildService.getGuild(player.getUniqueId()).orElse(null);
+                GuildService.ActionResult result = guildService.disband(player);
+                report(sender, result, "guild.disbanded");
+                if (result == GuildService.ActionResult.OK && guild != null) {
+                    broadcastToGuild(guild, player.getUniqueId(), "guild.disbanded-notice");
+                }
+            }
             case "transfer" -> withTarget(sender, player, args, target ->
                     report(sender, guildService.transferLeadership(player, target.getUniqueId()), "guild.leadership-transferred"));
             case "list" -> showList(sender, args);
@@ -178,6 +208,19 @@ public final class GuildCommand implements CommandExecutor, TabCompleter {
             return Integer.parseInt(raw);
         } catch (NumberFormatException e) {
             return 1;
+        }
+    }
+
+    /** Announces a guild event to every online member except {@code exclude} (typically the actor, who already got their own result message). */
+    private void broadcastToGuild(Guild guild, UUID exclude, String key, Object... placeholders) {
+        for (UUID memberId : guild.getMembers().keySet()) {
+            if (memberId.equals(exclude)) {
+                continue;
+            }
+            Player member = Bukkit.getPlayer(memberId);
+            if (member != null) {
+                messages.send(member, key, placeholders);
+            }
         }
     }
 

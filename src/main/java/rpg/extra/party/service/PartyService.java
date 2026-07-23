@@ -87,6 +87,35 @@ public final class PartyService {
         return ActionResult.OK;
     }
 
+    /**
+     * Result of {@link #leaveOnQuit}: the party as it stands right after the disconnecting
+     * player was removed (empty when the party was disbanded outright), and whether leadership
+     * was auto-transferred as part of the removal.
+     */
+    public record QuitLeaveOutcome(Party party, boolean leadershipTransferred) {
+    }
+
+    /**
+     * Leaves {@code playerId}'s party as a side effect of them disconnecting, bypassing the
+     * {@link ActionResult#LEADER_MUST_DISBAND} restriction that applies to an explicit
+     * {@code /party leave}: a disconnecting leader hands off leadership to another member
+     * (auto-picked by {@link rpg.extra.party.manager.PartyManager#leaveParty}) if any remain, or
+     * the party is disbanded if they were the last member. Returns empty when the player wasn't
+     * in a party, or the party had no other members left to notify.
+     */
+    public Optional<QuitLeaveOutcome> leaveOnQuit(UUID playerId) {
+        Party party = manager.getByPlayer(playerId).orElse(null);
+        if (party == null || party.getMembers().size() <= 1) {
+            if (party != null) {
+                manager.leaveParty(playerId);
+            }
+            return Optional.empty();
+        }
+        boolean wasLeader = party.getLeaderId().equals(playerId);
+        manager.leaveParty(playerId);
+        return Optional.of(new QuitLeaveOutcome(party, wasLeader));
+    }
+
     /** Hands leadership to {@code newLeaderId} (must already be a member). */
     public ActionResult transferLeadership(Player currentLeader, UUID newLeaderId) {
         Party party = manager.getByPlayer(currentLeader.getUniqueId()).orElse(null);
