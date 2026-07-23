@@ -27,7 +27,8 @@ public final class PartyModule implements ExtraModule {
         int maxPartySize = plugin.getConfigManager().get("config.yml").get().getInt("party.max-size", 6);
         this.partyService = new PartyService(manager, maxPartySize);
 
-        plugin.getServer().getPluginManager().registerEvents(new PartyQuitListener(manager), plugin);
+        plugin.getServer().getPluginManager().registerEvents(
+                new PartyQuitListener(manager, partyService, plugin.getMessageManager()), plugin);
         PartyCommand partyCommand = new PartyCommand(partyService, plugin.getMessageManager());
         String description = "パーティーを管理します。";
         String usage = "party <create|invite|accept|decline|leave|kick|disband|transfer|list|chat <message>>";

@@ -56,6 +56,12 @@ party:
   cannot-target-self: "&%c自分自身は対象にできません。"
   leader-must-disband: "&%cリーダーはパーティーを脱退できません。解散する場合は /party disband を、リーダーを譲る場合は /party transfer &%7<&%eplayer&%7>&%e&%c を使ってください。"
   leadership-transferred: "&%aリーダー権限を譲渡しました。"
+  member-joined: "&%a{player}がパーティーに参加しました。"
+  member-left: "&%e{player}がパーティーを離れました。"
+  kicked-notice: "&%cパーティーから追放されました。"
+  disbanded-notice: "&%eパーティーが解散されました。"
+  member-left-quit: "&%e{player}が切断したためパーティーを離れました。"
+  leadership-transferred-quit: "&%6{player}が新しいリーダーになりました。"
 
 guild:
   created: "&%aギルドを作成しました。"
@@ -81,6 +87,10 @@ guild:
   tag-taken: "&%cそのギルドタグは既に使われています。"
   target-not-member: "&%c対象はこのギルドのメンバーではありません。"
   leadership-transferred: "&%aリーダー権限を譲渡しました。"
+  member-joined: "&%a{player}がギルドに参加しました。"
+  member-left: "&%e{player}がギルドを離れました。"
+  kicked-notice: "&%cギルドから追放されました。"
+  disbanded-notice: "&%eギルドが解散されました。"
   npc-summary: "&%a[{tag}] {name} &%7- あなたの役職: {role} (メンバー数: {members})"
   npc-no-guild: "&%eギルドに未所属です。/guild create &%7<&%ename&%7>&%e &%7<&%etag&%7>&%e で作成できます。"
   list-entry: "&%a[{tag}] {name} &%7- メンバー数: {members}"

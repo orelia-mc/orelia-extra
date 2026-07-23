@@ -14,8 +14,8 @@ Orelia は 3 プラグイン構成です。
 
 全 11 モジュールが実装済みで、それぞれ `OreliaExtraPlugin#onEnable` に登録される `ExtraModule` として動作し、orelia-core / orelia-world とは公開 API(`rpg.api` / `rpg.world.api`)経由でのみ連携します(ゲームプレイモジュールの内部には触れません)。
 
-- **Party**(`/ol party`) — インメモリのパーティ機能(create/invite/accept/decline/leave/kick/disband/transfer/chat。リーダーはleaveできずdisbandかtransferのみ)。招待を受け取ると「承認」「拒否」のクリック可能なチャットテキストが表示され、クリックだけで応答できる
-- **Guild**(`/ol guild`) — DB 永続化されたギルド(leader/officer/member ロール、list/transfer/chat)
+- **Party**(`/ol party`) — インメモリのパーティ機能(create/invite/accept/decline/leave/kick/disband/transfer/chat。リーダーはleaveできずdisbandかtransferのみ)。招待を受け取ると「承認」「拒否」のクリック可能なチャットテキストが表示され、クリックだけで応答できる。参加/離脱/追放/解散はメンバー全員に通知され、リーダーがサーバーから切断した場合は自動でleave扱いになり(1人なら解散、2人以上なら残りメンバーへリーダー権限を自動譲渡)
+- **Guild**(`/ol guild`) — DB 永続化されたギルド(leader/officer/member ロール、list/transfer/chat)。招待はクリックで`/guild accept`を実行できる。参加/離脱/追放/解散はメンバー全員に通知される
 - **Chat**(`/ol chat`、トップレベル `/chat` エイリアス) — パブリック(デフォルト)/パーティー/ギルド/管理者の4チャンネルを切り替えるチャットチャンネル機能。`/oladmin chat <message>`・`/ol party chat <message>`・`/ol guild chat <message>` は現在の選択チャンネルを変えずに一度だけ送信する
 - **Trade**(`/ol trade`) — confirm/confirm ハンドシェイクによる 2 人間アイテム取引
 - **Mail**(`/ol mail`) — アイテム添付・GUI 受信箱付きの DB 永続化メールボックス

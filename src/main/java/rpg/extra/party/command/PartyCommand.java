@@ -67,9 +67,23 @@ public final class PartyCommand implements CommandExecutor, TabCompleter {
                     sendInviteNotification(target, player);
                 }
             }
-            case "accept" -> report(sender, partyService.accept(player), "party.accepted");
+            case "accept" -> {
+                PartyService.ActionResult result = partyService.accept(player);
+                report(sender, result, "party.accepted");
+                if (result == PartyService.ActionResult.OK) {
+                    partyService.getParty(player.getUniqueId())
+                            .ifPresent(party -> broadcastToParty(party, player.getUniqueId(), "party.member-joined", "player", player.getName()));
+                }
+            }
             case "decline" -> report(sender, partyService.decline(player), "party.declined");
-            case "leave" -> report(sender, partyService.leave(player), "party.left");
+            case "leave" -> {
+                Party party = partyService.getParty(player.getUniqueId()).orElse(null);
+                PartyService.ActionResult result = partyService.leave(player);
+                report(sender, result, "party.left");
+                if (result == PartyService.ActionResult.OK && party != null) {
+                    broadcastToParty(party, player.getUniqueId(), "party.member-left", "player", player.getName());
+                }
+            }
             case "kick" -> {
                 if (args.length < 2) {
                     messages.send(sender, "usage.party-kick");
@@ -80,9 +94,22 @@ public final class PartyCommand implements CommandExecutor, TabCompleter {
                     messages.send(sender, "command.player-not-found", "player", args[1]);
                     return true;
                 }
-                report(sender, partyService.kick(player, target.getUniqueId()), "party.kicked");
+                PartyService.ActionResult result = partyService.kick(player, target.getUniqueId());
+                report(sender, result, "party.kicked");
+                if (result == PartyService.ActionResult.OK) {
+                    messages.send(target, "party.kicked-notice");
+                    partyService.getParty(player.getUniqueId())
+                            .ifPresent(party -> broadcastToParty(party, player.getUniqueId(), "party.member-left", "player", target.getName()));
+                }
             }
-            case "disband" -> report(sender, partyService.disband(player), "party.disbanded");
+            case "disband" -> {
+                Party party = partyService.getParty(player.getUniqueId()).orElse(null);
+                PartyService.ActionResult result = partyService.disband(player);
+                report(sender, result, "party.disbanded");
+                if (result == PartyService.ActionResult.OK && party != null) {
+                    broadcastToParty(party, player.getUniqueId(), "party.disbanded-notice");
+                }
+            }
             case "transfer" -> {
                 if (args.length < 2) {
                     messages.send(sender, "usage.party-transfer");
@@ -177,6 +204,19 @@ public final class PartyCommand implements CommandExecutor, TabCompleter {
             boolean isLeader = memberId.equals(party.getLeaderId());
             String leaderTag = isLeader ? messages.format("party.member-leader-tag") : "";
             messages.sendRaw(sender, "party.member-entry", "name", name, "leader", leaderTag);
+        }
+    }
+
+    /** Announces a party event to every online member except {@code exclude} (typically the actor, who already got their own result message). */
+    private void broadcastToParty(Party party, UUID exclude, String key, Object... placeholders) {
+        for (UUID memberId : party.getMembers()) {
+            if (memberId.equals(exclude)) {
+                continue;
+            }
+            Player member = Bukkit.getPlayer(memberId);
+            if (member != null) {
+                messages.send(member, key, placeholders);
+            }
         }
     }
 
