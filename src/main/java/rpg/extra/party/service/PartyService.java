@@ -67,6 +67,14 @@ public final class PartyService {
         return ActionResult.OK;
     }
 
+    public ActionResult decline(Player invitee) {
+        Optional<Party> party = manager.consumeInvite(invitee.getUniqueId());
+        if (party.isEmpty()) {
+            return ActionResult.NO_PENDING_INVITE;
+        }
+        return ActionResult.OK;
+    }
+
     public ActionResult leave(Player player) {
         Party party = manager.getByPlayer(player.getUniqueId()).orElse(null);
         if (party == null) {

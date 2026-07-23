@@ -1,5 +1,8 @@
 package rpg.extra.party.command;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,12 +22,12 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * {@code /ol party create|invite|accept|leave|kick|disband|transfer|list|chat} (SOW PartyModule).
+ * {@code /ol party create|invite|accept|decline|leave|kick|disband|transfer|list|chat} (SOW PartyModule).
  */
 public final class PartyCommand implements CommandExecutor, TabCompleter {
 
     private static final List<String> SUBCOMMANDS = List.of(
-            "create", "invite", "accept", "leave", "kick", "disband", "transfer", "list", "chat");
+            "create", "invite", "accept", "decline", "leave", "kick", "disband", "transfer", "list", "chat");
     private static final List<String> MEMBER_TARGET_ACTIONS = List.of("kick", "transfer");
 
     private final PartyService partyService;
@@ -61,10 +64,11 @@ public final class PartyCommand implements CommandExecutor, TabCompleter {
                 PartyService.ActionResult result = partyService.invite(player, target);
                 report(sender, result, "party.invited");
                 if (result == PartyService.ActionResult.OK) {
-                    messages.send(target, "party.invite-received", "player", player.getName());
+                    sendInviteNotification(target, player);
                 }
             }
             case "accept" -> report(sender, partyService.accept(player), "party.accepted");
+            case "decline" -> report(sender, partyService.decline(player), "party.declined");
             case "leave" -> report(sender, partyService.leave(player), "party.left");
             case "kick" -> {
                 if (args.length < 2) {
@@ -132,6 +136,18 @@ public final class PartyCommand implements CommandExecutor, TabCompleter {
             }
         }
         return names;
+    }
+
+    /** Sends the invite text plus clickable 承認/拒否 buttons (SOW: party invite click-to-respond). */
+    private void sendInviteNotification(Player invitee, Player inviter) {
+        messages.send(invitee, "party.invite-received", "player", inviter.getName());
+        Component accept = ColorUtil.component(messages.format("party.invite-accept-button"))
+                .clickEvent(ClickEvent.runCommand("/ol party accept"))
+                .hoverEvent(HoverEvent.showText(ColorUtil.component(messages.format("party.invite-accept-hover"))));
+        Component decline = ColorUtil.component(messages.format("party.invite-decline-button"))
+                .clickEvent(ClickEvent.runCommand("/ol party decline"))
+                .hoverEvent(HoverEvent.showText(ColorUtil.component(messages.format("party.invite-decline-hover"))));
+        invitee.sendMessage(accept.append(Component.text("   ")).append(decline));
     }
 
     private void partyChat(CommandSender sender, Player player, String[] args) {

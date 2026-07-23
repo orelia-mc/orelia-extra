@@ -11,7 +11,7 @@ command:
   ok: "&%aOK"
 
 usage:
-  party: "&%e使い方: /party &%7<&%ecreate&%7|&%einvite&%7|&%eaccept&%7|&%eleave&%7|&%ekick&%7|&%edisband&%7|&%etransfer&%7|&%elist&%7|&%echat&%7>&%e"
+  party: "&%e使い方: /party &%7<&%ecreate&%7|&%einvite&%7|&%eaccept&%7|&%edecline&%7|&%eleave&%7|&%ekick&%7|&%edisband&%7|&%etransfer&%7|&%elist&%7|&%echat&%7>&%e"
   party-invite: "&%e使い方: /party invite &%7<&%eplayer&%7>&%e"
   party-kick: "&%e使い方: /party kick &%7<&%eplayer&%7>&%e"
   party-transfer: "&%e使い方: /party transfer &%7<&%eplayer&%7>&%e"
@@ -34,8 +34,13 @@ usage:
 party:
   created: "&%aパーティーを作成しました。"
   invited: "&%a招待を送りました。"
-  invite-received: "&%a{player}からパーティー招待が届きました。/party accept で参加できます。"
+  invite-received: "&%a{player}からパーティー招待が届きました。"
+  invite-accept-button: "&%2[承認]"
+  invite-accept-hover: "&%aクリックしてパーティーに参加"
+  invite-decline-button: "&%4[拒否]"
+  invite-decline-hover: "&%cクリックして招待を拒否"
   accepted: "&%aパーティーに参加しました。"
+  declined: "&%c招待を拒否しました。"
   left: "&%aパーティーを抜けました。"
   kicked: "&%a追放しました。"
   disbanded: "&%aパーティーを解散しました。"
