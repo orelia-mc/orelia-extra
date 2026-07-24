@@ -34,3 +34,7 @@ Orelia は 3 プラグイン構成です。
 ```
 
 ビルドには `repo.papermc.io`(Paper API)と `jitpack.io`(orelia-core・orelia-world・Vault API を GitHub から直接解決)へのネットワークアクセスが必要です。
+
+## config/messagesの自動移行・バージョン管理
+
+`messages.yml`・`achievements.yml`・`housing.yml`・`mounts.yml`・`pets.yml`・`config.yml`はどちらも先頭の`config-version`で管理されており、新しいjarで起動すると新規追加されたキー(既存セクション内部のネストしたキーも含む)は既存ファイルの正しい位置へ自動で追記されます(orelia-coreの`ConfigMigrator`をjitpack経由で共有)。新しいトップレベルセクション・キーを追加したら、そのファイルの`config-version`を1つ上げてください。`main`へのpush(=PRマージ)ごとに`.github/workflows/version-bump.yml`が`build.gradle.kts`の`version`を自動でPATCHインクリメントし、タグを打ちます。互換性が壊れる変更は`bump:minor`、大規模な改修は`bump:major`ラベルをPRに付けてからマージしてください。

@@ -1,6 +1,7 @@
 # Achievement definitions for /achievement (SOW AchievementModule).
 # condition-type: REACH_LEVEL | COMPLETE_QUEST | MONEY_BALANCE
 # Reload with: /rpgextraadmin reload
+config-version: 1
 
 achievements:
   reach_level_10:

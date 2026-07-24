@@ -34,3 +34,7 @@ All 12 modules are implemented, each as an `ExtraModule` registered in `OreliaEx
 ```
 
 Requires network access to `repo.papermc.io` (Paper API) and `jitpack.io` (resolves orelia-core, orelia-world, and Vault API straight from GitHub).
+
+## Config/messages auto-migration and versioning
+
+`messages.yml`, `achievements.yml`, `housing.yml`, `mounts.yml`, `pets.yml`, and `config.yml` are all tracked by a top-of-file `config-version`; newly added keys (including ones nested inside a section you already have) are automatically spliced into an existing file at the correct position on next startup (via orelia-core's `ConfigMigrator`, shared over jitpack). Bump a file's `config-version` whenever you add a new top-level section or key. Every push to `main` (i.e. every merged PR) auto-bumps `build.gradle.kts`'s `version` by PATCH and tags the commit, via `.github/workflows/version-bump.yml`. Label a PR `bump:minor` for a breaking/compatibility change, or `bump:major` for a large rework, before merging.
