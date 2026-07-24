@@ -4,7 +4,7 @@
 
 ## About
 
-`orelia-extra` is the later MMORPG-feature plugin (Paper 1.21.x / Java 21) of the Minecraft RPG plugin suite **Orelia** — Party, Guild, Chat, Trade, Mail, Auction, Housing, Pet, Mount, Ranking, Achievement.
+`orelia-extra` is the later MMORPG-feature plugin (Paper 1.21.x / Java 21) of the Minecraft RPG plugin suite **Orelia** — Party, Friend, Guild, Chat, Trade, Mail, Auction, Housing, Pet, Mount, Ranking, Achievement.
 
 Orelia is split into 3 plugins:
 
@@ -12,11 +12,12 @@ Orelia is split into 3 plugins:
 - [orelia-world](https://github.com/orelia-mc/orelia-world) — quest/NPC/story content layer (soft dependency)
 - **orelia-extra** (this repo) — later MMORPG features
 
-All 11 modules are implemented, each as an `ExtraModule` registered in `OreliaExtraPlugin#onEnable`, talking to orelia-core/orelia-world only through their published `rpg.api`/`rpg.world.api` interfaces (never gameplay-module internals):
+All 12 modules are implemented, each as an `ExtraModule` registered in `OreliaExtraPlugin#onEnable`, talking to orelia-core/orelia-world only through their published `rpg.api`/`rpg.world.api` interfaces (never gameplay-module internals):
 
 - **Party** (`/ol party`) — in-memory party grouping (create/invite/accept/decline/leave/kick/disband/transfer/chat; the leader can't leave, only disband or transfer). Receiving an invite shows clickable "Accept"/"Decline" chat text so it can be answered with a single click. Joins/leaves/kicks/disbands are announced to every member, and a disconnecting leader auto-leaves (disbanding a solo party, or auto-transferring leadership when others remain)
+- **Friend** (`/ol friend`) — DB-persisted mutual friend list (add/accept/decline/remove/list; invites are clickable accept/decline). `/ol friend list` shows online friends with "Message" (pre-fills `/ol msg`) and "Request Teleport" buttons. Teleports are friends-only and consent-based (request, then a click to accept)
 - **Guild** (`/ol guild`) — DB-persisted guilds with leader/officer/member roles (list/transfer/chat). Invites are clickable and run `/guild accept`; joins/leaves/kicks/disbands are announced to every member
-- **Chat** (`/ol chat`, also aliased to top-level `/chat`) — switch between four chat channels: public (default)/party/guild/admin. `/oladmin chat <message>`/`/ol party chat <message>`/`/ol guild chat <message>` send a one-off message without changing the sender's selected channel
+- **Chat** (`/ol chat`, also aliased to top-level `/chat`) — switch between four chat channels: public (default)/party/guild/admin. `/oladmin chat <message>`/`/ol party chat <message>`/`/ol guild chat <message>` send a one-off message without changing the sender's selected channel. `/ol msg <player> <message>` (also aliased to top-level `/msg`) sends a one-to-one private message without changing the selected channel
 - **Trade** (`/ol trade`) — two-player item trading with a confirm/confirm handshake
 - **Mail** (`/ol mail`) — DB-persisted mailbox with item attachments, GUI inbox
 - **Auction** (`/ol auction`) — player-run auction house with timed listings, settles via Vault

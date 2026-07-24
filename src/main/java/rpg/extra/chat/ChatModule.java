@@ -3,6 +3,7 @@ package rpg.extra.chat;
 import rpg.core.command.CommandAliasUtil;
 import rpg.extra.chat.command.AdminChatCommand;
 import rpg.extra.chat.command.ChatChannelCommand;
+import rpg.extra.chat.command.MsgCommand;
 import rpg.extra.chat.listener.ChatChannelListener;
 import rpg.extra.chat.service.ChatChannelService;
 import rpg.extra.core.OreliaExtraPlugin;
@@ -47,6 +48,12 @@ public final class ChatModule implements ExtraModule {
 
         plugin.getAdminCommandRegistry().register("chat", new AdminChatCommand(plugin.getMessageManager()),
                 "管理者チャットにメッセージを送信します。", "chat <message>");
+
+        MsgCommand msgCommand = new MsgCommand(plugin.getMessageManager());
+        String msgDescription = "指定したプレイヤーに個人メッセージを送信します。";
+        String msgUsage = "msg <player> <message>";
+        plugin.getPlayerCommandRegistry().register("msg", msgCommand, msgDescription, msgUsage);
+        CommandAliasUtil.registerAlias(plugin, "msg", msgCommand, msgDescription, "<player> <message>");
     }
 
     @Override

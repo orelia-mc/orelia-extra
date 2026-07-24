@@ -3,6 +3,14 @@
 #
 # Module-specific config lives in its own file (housing.yml, pets.yml, mounts.yml,
 # achievements.yml). This file is for cross-module or plugin-wide settings.
+#
+# config-version tracks this file's schema. Bump it whenever a new top-level section is
+# added - on next startup, ConfigManager appends the new section (with its comments) to any
+# existing config.yml that's missing it, without touching anything you've already customized.
+config-version: 1
 
 party:
   max-size: 6
+
+friend:
+  max-friends: 50
