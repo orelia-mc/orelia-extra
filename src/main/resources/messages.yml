@@ -2,6 +2,7 @@
 # rpg.core.message.MessageManager (reused from orelia-core), keyed by the dotted paths
 # below - do not hardcode ChatColor + literal strings in command/listener/service code,
 # add a key here instead.
+config-version: 1
 
 prefix: "&%8[&%6Orelia&%8] &r"
 

@@ -1,5 +1,6 @@
 # Pet definitions for /pet (SOW PetModule).
 # Reload with: /rpgextraadmin reload
+config-version: 1
 
 pets:
   wolf:

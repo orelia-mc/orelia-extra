@@ -1,5 +1,6 @@
 # Mount definitions for /mount (SOW MountModule).
 # Reload with: /rpgextraadmin reload
+config-version: 1
 
 mounts:
   horse:

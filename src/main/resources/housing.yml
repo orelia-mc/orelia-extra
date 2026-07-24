@@ -1,5 +1,6 @@
 # House plot definitions for /house (SOW HousingModule).
 # Reload with: /rpgextraadmin reload
+config-version: 1
 
 plots:
   starter_1:
