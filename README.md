@@ -4,7 +4,7 @@
 
 ## About
 
-`orelia-extra` は Minecraft RPG プラグイン群 **Orelia** の後発 MMORPG 機能プラグイン(Paper 1.21.x / Java 21)です。Party・Guild・Chat・Trade・Mail・Auction・Housing・Pet・Mount・Ranking・Achievement を提供します。
+`orelia-extra` は Minecraft RPG プラグイン群 **Orelia** の後発 MMORPG 機能プラグイン(Paper 1.21.x / Java 21)です。Party・Friend・Guild・Chat・Trade・Mail・Auction・Housing・Pet・Mount・Ranking・Achievement を提供します。
 
 Orelia は 3 プラグイン構成です。
 
@@ -12,11 +12,12 @@ Orelia は 3 プラグイン構成です。
 - [orelia-world](https://github.com/orelia-mc/orelia-world) — クエスト・NPC・ストーリーのコンテンツ層(ソフト依存)
 - **orelia-extra**(本リポジトリ) — 後発の MMORPG 系機能
 
-全 11 モジュールが実装済みで、それぞれ `OreliaExtraPlugin#onEnable` に登録される `ExtraModule` として動作し、orelia-core / orelia-world とは公開 API(`rpg.api` / `rpg.world.api`)経由でのみ連携します(ゲームプレイモジュールの内部には触れません)。
+全 12 モジュールが実装済みで、それぞれ `OreliaExtraPlugin#onEnable` に登録される `ExtraModule` として動作し、orelia-core / orelia-world とは公開 API(`rpg.api` / `rpg.world.api`)経由でのみ連携します(ゲームプレイモジュールの内部には触れません)。
 
 - **Party**(`/ol party`) — インメモリのパーティ機能(create/invite/accept/decline/leave/kick/disband/transfer/chat。リーダーはleaveできずdisbandかtransferのみ)。招待を受け取ると「承認」「拒否」のクリック可能なチャットテキストが表示され、クリックだけで応答できる。参加/離脱/追放/解散はメンバー全員に通知され、リーダーがサーバーから切断した場合は自動でleave扱いになり(1人なら解散、2人以上なら残りメンバーへリーダー権限を自動譲渡)
+- **Friend**(`/ol friend`) — DB 永続化された相互フレンドリスト(add/accept/decline/remove/list、招待はクリック承認/拒否)。オンラインのフレンドには`/ol friend list`から「メッセージ」(`/ol msg`の入力欄への差し込み)・「テレポート申請」ボタンが出る。テレポートはフレンド間のみ・双方合意制(申請→クリック承認)
 - **Guild**(`/ol guild`) — DB 永続化されたギルド(leader/officer/member ロール、list/transfer/chat)。招待はクリックで`/guild accept`を実行できる。参加/離脱/追放/解散はメンバー全員に通知される
-- **Chat**(`/ol chat`、トップレベル `/chat` エイリアス) — パブリック(デフォルト)/パーティー/ギルド/管理者の4チャンネルを切り替えるチャットチャンネル機能。`/oladmin chat <message>`・`/ol party chat <message>`・`/ol guild chat <message>` は現在の選択チャンネルを変えずに一度だけ送信する
+- **Chat**(`/ol chat`、トップレベル `/chat` エイリアス) — パブリック(デフォルト)/パーティー/ギルド/管理者の4チャンネルを切り替えるチャットチャンネル機能。`/oladmin chat <message>`・`/ol party chat <message>`・`/ol guild chat <message>` は現在の選択チャンネルを変えずに一度だけ送信する。`/ol msg <player> <message>`(トップレベル`/msg`エイリアス)は選択中チャンネルを変えずに1対1の個人メッセージを送る
 - **Trade**(`/ol trade`) — confirm/confirm ハンドシェイクによる 2 人間アイテム取引
 - **Mail**(`/ol mail`) — アイテム添付・GUI 受信箱付きの DB 永続化メールボックス
 - **Auction**(`/ol auction`) — 期限付き出品のプレイヤー主導オークションハウス(決済は Vault)

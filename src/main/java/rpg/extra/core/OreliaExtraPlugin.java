@@ -14,6 +14,7 @@ import rpg.extra.auction.AuctionModule;
 import rpg.extra.chat.ChatModule;
 import rpg.extra.core.command.ExtraAdminCommand;
 import rpg.extra.core.module.ExtraModuleManager;
+import rpg.extra.friend.FriendModule;
 import rpg.extra.guild.GuildModule;
 import rpg.extra.housing.HousingModule;
 import rpg.extra.mail.MailModule;
@@ -79,6 +80,7 @@ public final class OreliaExtraPlugin extends JavaPlugin {
                 "orelia-extra の設定を再読み込みします。", "extrareload");
 
         moduleManager.register(new PartyModule());
+        moduleManager.register(new FriendModule());
         moduleManager.register(new GuildModule());
         moduleManager.register(new ChatModule());
         moduleManager.register(new TradeModule());
