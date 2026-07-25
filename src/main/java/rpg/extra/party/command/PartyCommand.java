@@ -174,7 +174,7 @@ public final class PartyCommand implements CommandExecutor, TabCompleter {
         Component decline = ColorUtil.component(messages.format("party.invite-decline-button"))
                 .clickEvent(ClickEvent.runCommand("/ol party decline"))
                 .hoverEvent(HoverEvent.showText(ColorUtil.component(messages.format("party.invite-decline-hover"))));
-        invitee.sendMessage(accept.append(Component.text("   ")).append(decline));
+        invitee.sendMessage(Component.text(" ").append(accept).append(Component.text("   ")).append(decline));
     }
 
     private void partyChat(CommandSender sender, Player player, String[] args) {
