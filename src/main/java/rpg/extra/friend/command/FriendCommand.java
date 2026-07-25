@@ -170,7 +170,7 @@ public final class FriendCommand implements CommandExecutor, TabCompleter {
         Component decline = ColorUtil.component(messages.format("friend.request-decline-button"))
                 .clickEvent(ClickEvent.runCommand("/ol friend decline"))
                 .hoverEvent(HoverEvent.showText(ColorUtil.component(messages.format("friend.request-decline-hover"))));
-        invitee.sendMessage(accept.append(Component.text("   ")).append(decline));
+        invitee.sendMessage(Component.text(" ").append(accept).append(Component.text("   ")).append(decline));
     }
 
     private void sendTeleportRequestNotification(Player invitee, Player requester) {
@@ -181,7 +181,7 @@ public final class FriendCommand implements CommandExecutor, TabCompleter {
         Component decline = ColorUtil.component(messages.format("friend.tpa-decline-button"))
                 .clickEvent(ClickEvent.runCommand("/ol friend tpdecline"))
                 .hoverEvent(HoverEvent.showText(ColorUtil.component(messages.format("friend.tpa-decline-hover"))));
-        invitee.sendMessage(accept.append(Component.text("   ")).append(decline));
+        invitee.sendMessage(Component.text(" ").append(accept).append(Component.text("   ")).append(decline));
     }
 
     private void listFriends(CommandSender sender, Player player) {
