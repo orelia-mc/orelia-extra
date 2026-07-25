@@ -4,6 +4,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Tameable;
 import rpg.extra.pet.manager.PetManager;
 import rpg.extra.pet.model.PetDefinition;
 import rpg.extra.pet.repository.PetConfigRepository;
@@ -100,8 +101,16 @@ public final class PetService {
         entity.setCustomName(definition.getName());
         entity.setCustomNameVisible(true);
         entity.setRemoveWhenFarAway(false);
+        entity.setInvulnerable(true);
         if (entity instanceof Mob mob) {
             mob.setTarget(null);
+        }
+        // Tameable species (wolves, cats, ...) get vanilla's own follow-owner AI on top of
+        // PetManager#tickFollow's teleport-back safety net, so they track the owner smoothly
+        // instead of only snapping back once they drift past the follow-distance threshold.
+        if (entity instanceof Tameable tameable) {
+            tameable.setOwner(player);
+            tameable.setTamed(true);
         }
         petManager.register(player.getUniqueId(), entity);
         selectedByOwner.put(player.getUniqueId(), petId);

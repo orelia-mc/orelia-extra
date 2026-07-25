@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class PetManager {
 
-    private static final double FOLLOW_DISTANCE = 4.0;
+    private static final double FOLLOW_DISTANCE = 2.5;
 
     private final Map<UUID, LivingEntity> activeEntities = new ConcurrentHashMap<>();
 

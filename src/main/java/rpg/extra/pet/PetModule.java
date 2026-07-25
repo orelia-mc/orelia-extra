@@ -22,7 +22,7 @@ import java.util.logging.Level;
  */
 public final class PetModule implements ExtraModule {
 
-    private static final long FOLLOW_TICK_PERIOD_TICKS = 10L;
+    private static final long FOLLOW_TICK_PERIOD_TICKS = 5L;
 
     private final PetConfigRepository configRepository = new PetConfigRepository();
     private final PetManager petManager = new PetManager();
@@ -59,7 +59,7 @@ public final class PetModule implements ExtraModule {
 
         this.petService = new PetService(configRepository, ownershipRepository, petManager, economy);
         petService.loadAll();
-        this.guiScreen = new PetGuiScreen(petService, plugin.getMessageManager());
+        this.guiScreen = new PetGuiScreen(petService, petManager, plugin.getMessageManager());
 
         plugin.getServer().getPluginManager().registerEvents(new PetQuitListener(petManager), plugin);
         plugin.getPlayerCommandRegistry().register("pet",

@@ -3,7 +3,9 @@ package rpg.extra.pet.command;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import rpg.core.command.TabCompletions;
 import rpg.core.message.MessageManager;
 import rpg.extra.pet.gui.PetGuiScreen;
 import rpg.extra.pet.model.PetDefinition;
@@ -11,13 +13,17 @@ import rpg.extra.pet.service.PetService;
 import rpg.gui.framework.GuiManager;
 import rpg.util.MoneyFormat;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
  * {@code /ol pet [list|gui|buy <id>|summon [id]|dismiss]} (SOW PetModule).
  */
-public final class PetCommand implements CommandExecutor {
+public final class PetCommand implements CommandExecutor, TabCompleter {
+
+    private static final List<String> SUBCOMMANDS = List.of("list", "gui", "buy", "summon", "dismiss");
+    private static final List<String> PET_ID_ACTIONS = List.of("buy", "summon");
 
     private final PetService petService;
     private final PetGuiScreen guiScreen;
@@ -66,6 +72,17 @@ public final class PetCommand implements CommandExecutor {
             default -> messages.send(sender, "usage.pet");
         }
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length <= 1) {
+            return TabCompletions.matching(SUBCOMMANDS, args.length == 0 ? "" : args[0]);
+        }
+        if (args.length != 2 || !PET_ID_ACTIONS.contains(args[0].toLowerCase())) {
+            return List.of();
+        }
+        return TabCompletions.matching(petService.getAllPets().keySet(), args[1]);
     }
 
     private void listPets(CommandSender sender, Player player) {
