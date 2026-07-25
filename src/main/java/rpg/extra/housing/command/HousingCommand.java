@@ -5,22 +5,28 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import rpg.core.message.MessageManager;
+import rpg.extra.housing.gui.HousingGuiScreen;
 import rpg.extra.housing.model.HousePlot;
 import rpg.extra.housing.service.HousingService;
+import rpg.gui.framework.GuiManager;
 import rpg.util.MoneyFormat;
 
 import java.util.Map;
 
 /**
- * {@code /ol house [list|buy <plotId>|home]} (SOW HousingModule).
+ * {@code /ol house [list|gui|buy <plotId>|home]} (SOW HousingModule).
  */
 public final class HousingCommand implements CommandExecutor {
 
     private final HousingService housingService;
+    private final HousingGuiScreen guiScreen;
+    private final GuiManager guiManager;
     private final MessageManager messages;
 
-    public HousingCommand(HousingService housingService, MessageManager messages) {
+    public HousingCommand(HousingService housingService, HousingGuiScreen guiScreen, GuiManager guiManager, MessageManager messages) {
         this.housingService = housingService;
+        this.guiScreen = guiScreen;
+        this.guiManager = guiManager;
         this.messages = messages;
     }
 
@@ -32,6 +38,10 @@ public final class HousingCommand implements CommandExecutor {
         }
         if (args.length == 0) {
             messages.send(sender, "usage.house");
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("gui")) {
+            guiManager.open(player, guiScreen.build(player));
             return true;
         }
 

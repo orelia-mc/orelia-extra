@@ -6,9 +6,11 @@ import rpg.database.manager.DatabaseManager;
 import rpg.extra.core.OreliaExtraPlugin;
 import rpg.extra.core.module.ExtraModule;
 import rpg.extra.housing.command.HousingCommand;
+import rpg.extra.housing.gui.HousingGuiScreen;
 import rpg.extra.housing.repository.HouseOwnershipRepository;
 import rpg.extra.housing.repository.HousePlotRepository;
 import rpg.extra.housing.service.HousingService;
+import rpg.gui.framework.GuiManager;
 
 import java.util.logging.Level;
 
@@ -19,7 +21,9 @@ import java.util.logging.Level;
 public final class HousingModule implements ExtraModule {
 
     private final HousePlotRepository plotRepository = new HousePlotRepository();
+    private final GuiManager guiManager = new GuiManager();
     private HousingService housingService;
+    private HousingGuiScreen guiScreen;
     private OreliaExtraPlugin plugin;
 
     @Override
@@ -50,9 +54,11 @@ public final class HousingModule implements ExtraModule {
 
         this.housingService = new HousingService(plotRepository, ownershipRepository, economy);
         housingService.loadAll();
+        this.guiScreen = new HousingGuiScreen(housingService, plugin.getMessageManager());
 
-        plugin.getPlayerCommandRegistry().register("house", new HousingCommand(housingService, plugin.getMessageManager()),
-                "自宅の購入・移動を行います。", "house [list|buy <plotId>|home]");
+        plugin.getPlayerCommandRegistry().register("house",
+                new HousingCommand(housingService, guiScreen, guiManager, plugin.getMessageManager()),
+                "自宅の購入・移動を行います。", "house [list|gui|buy <plotId>|home]");
     }
 
     @Override
@@ -72,5 +78,13 @@ public final class HousingModule implements ExtraModule {
 
     public HousingService getHousingService() {
         return housingService;
+    }
+
+    public HousePlotRepository getPlotRepository() {
+        return plotRepository;
+    }
+
+    public HousingGuiScreen getGuiScreen() {
+        return guiScreen;
     }
 }

@@ -6,11 +6,13 @@ import rpg.database.manager.DatabaseManager;
 import rpg.extra.core.OreliaExtraPlugin;
 import rpg.extra.core.module.ExtraModule;
 import rpg.extra.pet.command.PetCommand;
+import rpg.extra.pet.gui.PetGuiScreen;
 import rpg.extra.pet.listener.PetQuitListener;
 import rpg.extra.pet.manager.PetManager;
 import rpg.extra.pet.repository.PetConfigRepository;
 import rpg.extra.pet.repository.PetOwnershipRepository;
 import rpg.extra.pet.service.PetService;
+import rpg.gui.framework.GuiManager;
 
 import java.util.logging.Level;
 
@@ -24,7 +26,9 @@ public final class PetModule implements ExtraModule {
 
     private final PetConfigRepository configRepository = new PetConfigRepository();
     private final PetManager petManager = new PetManager();
+    private final GuiManager guiManager = new GuiManager();
     private PetService petService;
+    private PetGuiScreen guiScreen;
     private OreliaExtraPlugin plugin;
 
     @Override
@@ -55,10 +59,12 @@ public final class PetModule implements ExtraModule {
 
         this.petService = new PetService(configRepository, ownershipRepository, petManager, economy);
         petService.loadAll();
+        this.guiScreen = new PetGuiScreen(petService, plugin.getMessageManager());
 
         plugin.getServer().getPluginManager().registerEvents(new PetQuitListener(petManager), plugin);
-        plugin.getPlayerCommandRegistry().register("pet", new PetCommand(petService, plugin.getMessageManager()),
-                "ペットを管理します。", "pet [list|buy <id>|summon [id]|dismiss]");
+        plugin.getPlayerCommandRegistry().register("pet",
+                new PetCommand(petService, guiScreen, guiManager, plugin.getMessageManager()),
+                "ペットを管理します。", "pet [list|gui|buy <id>|summon [id]|dismiss]");
 
         plugin.getSchedulerService().runTimer(petManager::tickFollow, FOLLOW_TICK_PERIOD_TICKS, FOLLOW_TICK_PERIOD_TICKS);
     }
@@ -81,5 +87,9 @@ public final class PetModule implements ExtraModule {
 
     public PetService getPetService() {
         return petService;
+    }
+
+    public PetGuiScreen getGuiScreen() {
+        return guiScreen;
     }
 }

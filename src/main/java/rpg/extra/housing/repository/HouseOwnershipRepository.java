@@ -74,4 +74,14 @@ public final class HouseOwnershipRepository implements SchemaOwner {
         }
     }
 
+    public void delete(UUID ownerId) {
+        try (Connection connection = databaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement("DELETE FROM house_ownership WHERE owner_uuid = ?")) {
+            statement.setString(1, ownerId.toString());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalStateException("Failed to delete house ownership for " + ownerId, e);
+        }
+    }
+
 }

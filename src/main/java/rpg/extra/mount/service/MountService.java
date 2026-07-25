@@ -74,6 +74,21 @@ public final class MountService {
         return ActionResult.OK;
     }
 
+    /** Debug helper: unlocks a mount for {@code ownerId} without an economy check. */
+    public ActionResult forceUnlock(UUID ownerId, String mountId) {
+        MountDefinition definition = configRepository.findById(mountId).orElse(null);
+        if (definition == null) {
+            return ActionResult.MOUNT_NOT_FOUND;
+        }
+        Set<String> owned = unlockedByOwner.computeIfAbsent(ownerId, k -> new HashSet<>());
+        if (owned.contains(mountId)) {
+            return ActionResult.ALREADY_UNLOCKED;
+        }
+        owned.add(mountId);
+        ownershipRepository.saveUnlock(ownerId, mountId);
+        return ActionResult.OK;
+    }
+
     public ActionResult summon(Player player, String mountId) {
         MountDefinition definition = configRepository.findById(mountId).orElse(null);
         if (definition == null) {

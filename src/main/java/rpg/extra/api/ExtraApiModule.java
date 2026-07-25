@@ -5,9 +5,13 @@ import rpg.extra.auction.AuctionModule;
 import rpg.extra.core.OreliaExtraPlugin;
 import rpg.extra.core.module.ExtraModule;
 import rpg.extra.guild.GuildModule;
+import rpg.extra.housing.HousingModule;
 import rpg.extra.mail.MailModule;
+import rpg.extra.mount.MountModule;
 import rpg.extra.party.PartyModule;
+import rpg.extra.pet.PetModule;
 import rpg.extra.ranking.RankingModule;
+import rpg.extra.trade.TradeModule;
 
 /**
  * Publishes orelia-extra's own cross-plugin debug API ({@link ExtraDebugApi}) to Bukkit's
@@ -28,10 +32,15 @@ public final class ExtraApiModule implements ExtraModule {
         RankingModule rankingModule = require(plugin, RankingModule.class);
         GuildModule guildModule = require(plugin, GuildModule.class);
         PartyModule partyModule = require(plugin, PartyModule.class);
+        PetModule petModule = require(plugin, PetModule.class);
+        MountModule mountModule = require(plugin, MountModule.class);
+        HousingModule housingModule = require(plugin, HousingModule.class);
+        TradeModule tradeModule = require(plugin, TradeModule.class);
 
         plugin.getServer().getServicesManager().register(
                 ExtraDebugApi.class,
-                new ExtraDebugApiImpl(plugin.getConfigManager(), auctionModule, mailModule, rankingModule),
+                new ExtraDebugApiImpl(plugin.getConfigManager(), auctionModule, mailModule, rankingModule,
+                        petModule, mountModule, housingModule, tradeModule),
                 plugin, ServicePriority.Normal);
         plugin.getServer().getServicesManager().register(
                 GuildApi.class, new GuildApiImpl(guildModule.getGuildService()), plugin, ServicePriority.Normal);
