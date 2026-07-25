@@ -4,13 +4,22 @@ import org.bukkit.entity.Player;
 import rpg.core.config.ConfigFile;
 import rpg.core.config.ConfigManager;
 import rpg.extra.auction.AuctionModule;
+import rpg.extra.housing.HousingModule;
+import rpg.extra.housing.service.HousingService;
 import rpg.extra.mail.MailModule;
+import rpg.extra.mount.MountModule;
+import rpg.extra.mount.service.MountService;
+import rpg.extra.pet.PetModule;
+import rpg.extra.pet.service.PetService;
 import rpg.extra.ranking.RankingModule;
+import rpg.extra.trade.TradeModule;
+import rpg.extra.trade.model.TradeSession;
 import rpg.gui.framework.GuiManager;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 final class ExtraDebugApiImpl implements ExtraDebugApi {
 
@@ -18,14 +27,23 @@ final class ExtraDebugApiImpl implements ExtraDebugApi {
     private final AuctionModule auctionModule;
     private final MailModule mailModule;
     private final RankingModule rankingModule;
+    private final PetModule petModule;
+    private final MountModule mountModule;
+    private final HousingModule housingModule;
+    private final TradeModule tradeModule;
     private final GuiManager guiManager = new GuiManager();
 
     ExtraDebugApiImpl(ConfigManager configManager, AuctionModule auctionModule, MailModule mailModule,
-                       RankingModule rankingModule) {
+                       RankingModule rankingModule, PetModule petModule, MountModule mountModule,
+                       HousingModule housingModule, TradeModule tradeModule) {
         this.configManager = configManager;
         this.auctionModule = auctionModule;
         this.mailModule = mailModule;
         this.rankingModule = rankingModule;
+        this.petModule = petModule;
+        this.mountModule = mountModule;
+        this.housingModule = housingModule;
+        this.tradeModule = tradeModule;
     }
 
     @Override
@@ -83,6 +101,78 @@ final class ExtraDebugApiImpl implements ExtraDebugApi {
     @Override
     public void openRanking(Player player) {
         guiManager.open(player, rankingModule.getGuiScreen().build());
+    }
+
+    @Override
+    public void openPet(Player player) {
+        guiManager.open(player, petModule.getGuiScreen().build(player));
+    }
+
+    @Override
+    public void openHouse(Player player) {
+        guiManager.open(player, housingModule.getGuiScreen().build(player));
+    }
+
+    @Override
+    public Set<String> listPetIds() {
+        return petModule.getPetService().getAllPets().keySet();
+    }
+
+    @Override
+    public Set<String> getUnlockedPets(UUID playerId) {
+        return petModule.getPetService().getUnlockedPets(playerId);
+    }
+
+    @Override
+    public boolean forceUnlockPet(UUID playerId, String petId) {
+        return petModule.getPetService().forceUnlock(playerId, petId) == PetService.ActionResult.OK;
+    }
+
+    @Override
+    public Set<String> listMountIds() {
+        return mountModule.getMountService().getAllMounts().keySet();
+    }
+
+    @Override
+    public Set<String> getUnlockedMounts(UUID playerId) {
+        return mountModule.getMountService().getUnlockedMounts(playerId);
+    }
+
+    @Override
+    public boolean forceUnlockMount(UUID playerId, String mountId) {
+        return mountModule.getMountService().forceUnlock(playerId, mountId) == MountService.ActionResult.OK;
+    }
+
+    @Override
+    public Set<String> listHousePlotIds() {
+        return housingModule.getPlotRepository().getAll().keySet();
+    }
+
+    @Override
+    public Optional<String> getOwnedPlotId(UUID playerId) {
+        return housingModule.getHousingService().getOwnedPlot(playerId).map(plot -> plot.getId());
+    }
+
+    @Override
+    public boolean forceGrantPlot(Player player, String plotId) {
+        return housingModule.getHousingService().forceGrant(player, plotId) == HousingService.ActionResult.OK;
+    }
+
+    @Override
+    public boolean releasePlot(UUID playerId) {
+        return housingModule.getHousingService().releasePlot(playerId);
+    }
+
+    @Override
+    public Optional<UUID> getTradeCounterpart(UUID playerId) {
+        return tradeModule.getTradeService().getSession(playerId).map(session -> session.getOtherPlayer(playerId));
+    }
+
+    @Override
+    public boolean forceCancelTrade(UUID playerId) {
+        Optional<TradeSession> session = tradeModule.getTradeService().getSession(playerId);
+        tradeModule.getTradeService().forceCancelIfTrading(playerId);
+        return session.isPresent();
     }
 
     private ConfigFile tryGet(String fileName) {

@@ -61,6 +61,32 @@ public final class HousingService {
         return ActionResult.OK;
     }
 
+    /** Debug helper: grants {@code plotId} to {@code player} without an economy check. */
+    public ActionResult forceGrant(Player player, String plotId) {
+        HousePlot plot = plotRepository.findById(plotId).orElse(null);
+        if (plot == null) {
+            return ActionResult.PLOT_NOT_FOUND;
+        }
+        if (ownerToPlot.containsKey(player.getUniqueId())) {
+            return ActionResult.ALREADY_OWN_A_HOUSE;
+        }
+        if (ownerToPlot.containsValue(plotId)) {
+            return ActionResult.PLOT_TAKEN;
+        }
+        ownerToPlot.put(player.getUniqueId(), plotId);
+        ownershipRepository.save(player.getUniqueId(), plotId);
+        return ActionResult.OK;
+    }
+
+    /** Debug helper: releases {@code ownerId}'s plot (if any) so it can be re-purchased for testing. Returns false if they owned none. */
+    public boolean releasePlot(UUID ownerId) {
+        if (ownerToPlot.remove(ownerId) == null) {
+            return false;
+        }
+        ownershipRepository.delete(ownerId);
+        return true;
+    }
+
     public Optional<HousePlot> getOwnedPlot(UUID ownerId) {
         String plotId = ownerToPlot.get(ownerId);
         return plotId == null ? Optional.empty() : plotRepository.findById(plotId);

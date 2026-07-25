@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Cross-plugin surface for debug/testplay tooling (orelia-debug) over orelia-extra: config
@@ -29,4 +30,37 @@ public interface ExtraDebugApi {
     void openMail(Player player);
 
     void openRanking(Player player);
+
+    void openPet(Player player);
+
+    void openHouse(Player player);
+
+    Set<String> listPetIds();
+
+    Set<String> getUnlockedPets(UUID playerId);
+
+    /** {@code false} if {@code petId} doesn't exist or is already unlocked for {@code playerId}. */
+    boolean forceUnlockPet(UUID playerId, String petId);
+
+    Set<String> listMountIds();
+
+    Set<String> getUnlockedMounts(UUID playerId);
+
+    /** {@code false} if {@code mountId} doesn't exist or is already unlocked for {@code playerId}. */
+    boolean forceUnlockMount(UUID playerId, String mountId);
+
+    Set<String> listHousePlotIds();
+
+    Optional<String> getOwnedPlotId(UUID playerId);
+
+    /** {@code false} if {@code plotId} doesn't exist, is taken, or {@code player} already owns a plot. */
+    boolean forceGrantPlot(Player player, String plotId);
+
+    /** {@code false} if {@code playerId} didn't own a plot. */
+    boolean releasePlot(UUID playerId);
+
+    Optional<UUID> getTradeCounterpart(UUID playerId);
+
+    /** {@code false} if {@code playerId} wasn't in an active trade. */
+    boolean forceCancelTrade(UUID playerId);
 }

@@ -73,6 +73,21 @@ public final class PetService {
         return ActionResult.OK;
     }
 
+    /** Debug helper: unlocks a pet for {@code ownerId} without an economy check. */
+    public ActionResult forceUnlock(UUID ownerId, String petId) {
+        PetDefinition definition = configRepository.findById(petId).orElse(null);
+        if (definition == null) {
+            return ActionResult.PET_NOT_FOUND;
+        }
+        Set<String> owned = unlockedByOwner.computeIfAbsent(ownerId, k -> new HashSet<>());
+        if (owned.contains(petId)) {
+            return ActionResult.ALREADY_UNLOCKED;
+        }
+        owned.add(petId);
+        ownershipRepository.saveUnlock(ownerId, petId);
+        return ActionResult.OK;
+    }
+
     public ActionResult summon(Player player, String petId) {
         PetDefinition definition = configRepository.findById(petId).orElse(null);
         if (definition == null) {

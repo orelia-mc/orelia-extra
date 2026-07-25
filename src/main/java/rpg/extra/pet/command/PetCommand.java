@@ -5,23 +5,29 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import rpg.core.message.MessageManager;
+import rpg.extra.pet.gui.PetGuiScreen;
 import rpg.extra.pet.model.PetDefinition;
 import rpg.extra.pet.service.PetService;
+import rpg.gui.framework.GuiManager;
 import rpg.util.MoneyFormat;
 
 import java.util.Map;
 import java.util.Set;
 
 /**
- * {@code /ol pet [list|buy <id>|summon [id]|dismiss]} (SOW PetModule).
+ * {@code /ol pet [list|gui|buy <id>|summon [id]|dismiss]} (SOW PetModule).
  */
 public final class PetCommand implements CommandExecutor {
 
     private final PetService petService;
+    private final PetGuiScreen guiScreen;
+    private final GuiManager guiManager;
     private final MessageManager messages;
 
-    public PetCommand(PetService petService, MessageManager messages) {
+    public PetCommand(PetService petService, PetGuiScreen guiScreen, GuiManager guiManager, MessageManager messages) {
         this.petService = petService;
+        this.guiScreen = guiScreen;
+        this.guiManager = guiManager;
         this.messages = messages;
     }
 
@@ -33,6 +39,10 @@ public final class PetCommand implements CommandExecutor {
         }
         if (args.length == 0 || args[0].equalsIgnoreCase("list")) {
             listPets(sender, player);
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("gui")) {
+            guiManager.open(player, guiScreen.build(player));
             return true;
         }
 

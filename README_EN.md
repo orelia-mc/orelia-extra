@@ -21,8 +21,8 @@ All 12 modules are implemented, each as an `ExtraModule` registered in `OreliaEx
 - **Trade** (`/ol trade`) — two-player item trading with a confirm/confirm handshake
 - **Mail** (`/ol mail`) — DB-persisted mailbox with item attachments, GUI inbox
 - **Auction** (`/ol auction`) — player-run auction house with timed listings, settles via Vault
-- **Housing** (`/ol house`) — config-driven purchasable house plots with `/ol house home` teleport
-- **Pet** (`/ol pet`) — config-driven follower pets (unlock/summon/dismiss)
+- **Housing** (`/ol house`) — config-driven purchasable house plots with `/ol house home` teleport (`/ol house gui` opens a GUI to buy/go home too)
+- **Pet** (`/ol pet`) — config-driven follower pets (unlock/summon/dismiss; `/ol pet gui` opens a GUI to buy/summon too)
 - **Mount** (`/ol mount`) — config-driven rideable mounts (unlock/summon/dismiss)
 - **Ranking** (`/ol ranking`) — level leaderboard GUI, reads orelia-core's `StatusApi` directly
 - **Achievement** (`/ol achievement`) — config-driven achievements (level/quest/money conditions), rewards via `SkillApi`
