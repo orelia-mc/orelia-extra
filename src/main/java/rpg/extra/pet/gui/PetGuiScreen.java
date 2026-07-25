@@ -3,6 +3,7 @@ package rpg.extra.pet.gui;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import rpg.core.message.MessageManager;
+import rpg.extra.pet.manager.PetManager;
 import rpg.extra.pet.model.PetDefinition;
 import rpg.extra.pet.service.PetService;
 import rpg.gui.framework.Gui;
@@ -16,16 +17,18 @@ import java.util.Set;
 
 /**
  * Lists every pet from {@code pets.yml}; clicking an unowned one buys it, clicking an
- * owned one summons it. Same shape as {@code RankingGuiScreen} - a plain
+ * owned one toggles summon/dismiss ("休憩"). Same shape as {@code RankingGuiScreen} - a plain
  * {@code build(Player) -> Gui} method reusing orelia-core's generic Gui framework.
  */
 public final class PetGuiScreen {
 
     private final PetService petService;
+    private final PetManager petManager;
     private final MessageManager messages;
 
-    public PetGuiScreen(PetService petService, MessageManager messages) {
+    public PetGuiScreen(PetService petService, PetManager petManager, MessageManager messages) {
         this.petService = petService;
+        this.petManager = petManager;
         this.messages = messages;
     }
 
@@ -40,8 +43,10 @@ public final class PetGuiScreen {
                 break;
             }
             boolean owned = unlocked.contains(pet.getId());
+            boolean active = owned && pet.getId().equals(petService.getSelectedPetId(player.getUniqueId()))
+                    && petManager.hasActivePet(player.getUniqueId());
             List<String> lore = owned
-                    ? List.of("&%a所持済み", "&%7クリックして召喚")
+                    ? (active ? List.of("&%a召喚中", "&%7クリックして休憩させる") : List.of("&%a所持済み", "&%7クリックして召喚"))
                     : List.of("&%7価格: &%f" + MoneyFormat.format(pet.getPrice()), "&%7クリックして購入");
             gui.set(slot++, new GuiButton(new ItemBuilder(spawnEggFor(pet))
                     .name("&%e" + pet.getName())
@@ -54,7 +59,9 @@ public final class PetGuiScreen {
     private void handleClick(Player player, String petId, boolean owned) {
         if (owned) {
             player.closeInventory();
-            report(player, petService.summon(player, petId));
+            boolean active = petId.equals(petService.getSelectedPetId(player.getUniqueId()))
+                    && petManager.hasActivePet(player.getUniqueId());
+            report(player, active ? petService.dismiss(player) : petService.summon(player, petId));
         } else {
             report(player, petService.unlock(player, petId));
         }

@@ -1,10 +1,14 @@
 package rpg.extra.mount.service;
 
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Steerable;
+import org.bukkit.inventory.ItemStack;
 import rpg.extra.mount.manager.MountManager;
 import rpg.extra.mount.model.MountDefinition;
 import rpg.extra.mount.repository.MountConfigRepository;
@@ -102,10 +106,19 @@ public final class MountService {
         entity.setCustomNameVisible(true);
         if (entity instanceof LivingEntity livingEntity) {
             livingEntity.setRemoveWhenFarAway(false);
+            livingEntity.setInvulnerable(true);
             var speedAttribute = livingEntity.getAttribute(Attribute.MOVEMENT_SPEED);
             if (speedAttribute != null) {
                 speedAttribute.setBaseValue(definition.getSpeed());
             }
+        }
+        // Without a saddle, a mount ignores the player's steering input entirely. Steerable
+        // species (Pig/Strider) track it as a boolean flag; AbstractHorse species (Horse/
+        // Donkey/Mule/Camel/...) instead store it as an ItemStack in their own inventory.
+        if (entity instanceof Steerable steerable) {
+            steerable.setSaddle(true);
+        } else if (entity instanceof AbstractHorse horse) {
+            horse.getInventory().setSaddle(new ItemStack(Material.SADDLE));
         }
         mountManager.register(player.getUniqueId(), entity);
         entity.addPassenger(player);

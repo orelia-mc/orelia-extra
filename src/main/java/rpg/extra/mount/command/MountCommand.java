@@ -3,19 +3,25 @@ package rpg.extra.mount.command;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import rpg.core.command.TabCompletions;
 import rpg.core.message.MessageManager;
 import rpg.extra.mount.model.MountDefinition;
 import rpg.extra.mount.service.MountService;
 import rpg.util.MoneyFormat;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
  * {@code /ol mount [list|buy <id>|summon [id]|dismiss]} (SOW MountModule).
  */
-public final class MountCommand implements CommandExecutor {
+public final class MountCommand implements CommandExecutor, TabCompleter {
+
+    private static final List<String> SUBCOMMANDS = List.of("list", "buy", "summon", "dismiss");
+    private static final List<String> MOUNT_ID_ACTIONS = List.of("buy", "summon");
 
     private final MountService mountService;
     private final MessageManager messages;
@@ -56,6 +62,17 @@ public final class MountCommand implements CommandExecutor {
             default -> messages.send(sender, "usage.mount");
         }
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length <= 1) {
+            return TabCompletions.matching(SUBCOMMANDS, args.length == 0 ? "" : args[0]);
+        }
+        if (args.length != 2 || !MOUNT_ID_ACTIONS.contains(args[0].toLowerCase())) {
+            return List.of();
+        }
+        return TabCompletions.matching(mountService.getAllMounts().keySet(), args[1]);
     }
 
     private void listMounts(CommandSender sender, Player player) {

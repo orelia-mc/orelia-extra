@@ -4,16 +4,23 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import rpg.core.command.TabCompletions;
 import rpg.core.message.MessageManager;
 import rpg.extra.trade.model.TradeSession;
 import rpg.extra.trade.service.TradeService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * {@code /ol trade <player>|accept|add|remove <index>|confirm|cancel|view} (SOW TradeModule).
  */
-public final class TradeCommand implements CommandExecutor {
+public final class TradeCommand implements CommandExecutor, TabCompleter {
+
+    private static final List<String> SUBCOMMANDS = List.of("accept", "add", "remove", "confirm", "cancel", "view");
 
     private final TradeService tradeService;
     private final MessageManager messages;
@@ -75,6 +82,18 @@ public final class TradeCommand implements CommandExecutor {
             }
         }
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length <= 1) {
+            String prefix = args.length == 0 ? "" : args[0];
+            // First arg is either a subcommand or a target player name (default branch), so offer both.
+            List<String> options = new ArrayList<>(TabCompletions.matching(SUBCOMMANDS, prefix));
+            options.addAll(TabCompletions.onlinePlayerNames(prefix));
+            return options;
+        }
+        return List.of();
     }
 
     private void showOffers(CommandSender sender, Player player) {
