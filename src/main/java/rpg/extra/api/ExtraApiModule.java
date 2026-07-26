@@ -1,6 +1,7 @@
 package rpg.extra.api;
 
 import org.bukkit.plugin.ServicePriority;
+import rpg.extra.achievement.AchievementModule;
 import rpg.extra.auction.AuctionModule;
 import rpg.extra.core.OreliaExtraPlugin;
 import rpg.extra.core.module.ExtraModule;
@@ -36,6 +37,7 @@ public final class ExtraApiModule implements ExtraModule {
         MountModule mountModule = require(plugin, MountModule.class);
         HousingModule housingModule = require(plugin, HousingModule.class);
         TradeModule tradeModule = require(plugin, TradeModule.class);
+        AchievementModule achievementModule = require(plugin, AchievementModule.class);
 
         plugin.getServer().getServicesManager().register(
                 ExtraDebugApi.class,
@@ -46,6 +48,8 @@ public final class ExtraApiModule implements ExtraModule {
                 GuildApi.class, new GuildApiImpl(guildModule.getGuildService()), plugin, ServicePriority.Normal);
         plugin.getServer().getServicesManager().register(
                 PartyApi.class, new PartyApiImpl(partyModule.getPartyService()), plugin, ServicePriority.Normal);
+        plugin.getServer().getServicesManager().register(
+                AchievementApi.class, new AchievementApiImpl(achievementModule), plugin, ServicePriority.Normal);
     }
 
     @Override

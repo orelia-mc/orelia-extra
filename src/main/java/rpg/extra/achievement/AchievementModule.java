@@ -2,6 +2,7 @@ package rpg.extra.achievement;
 
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import rpg.api.SkillApi;
 import rpg.api.StatusApi;
 import rpg.core.command.CommandAliasUtil;
@@ -29,6 +30,8 @@ public final class AchievementModule implements ExtraModule {
 
     private final AchievementConfigRepository configRepository = new AchievementConfigRepository();
     private AchievementService achievementService;
+    private AchievementGuiScreen guiScreen;
+    private GuiManager guiManager;
     private OreliaExtraPlugin plugin;
 
     @Override
@@ -67,8 +70,8 @@ public final class AchievementModule implements ExtraModule {
                 questApi, plugin.getMessageManager());
         achievementService.loadAll();
 
-        GuiManager guiManager = new GuiManager();
-        AchievementGuiScreen guiScreen = new AchievementGuiScreen(achievementService, guiManager);
+        this.guiManager = new GuiManager();
+        this.guiScreen = new AchievementGuiScreen(achievementService, guiManager);
         plugin.getServer().getPluginManager().registerEvents(new AchievementJoinListener(achievementService), plugin);
         AchievementCommand achievementCommand = new AchievementCommand(achievementService, guiScreen, guiManager, plugin.getMessageManager());
         plugin.getPlayerCommandRegistry().register("achievement", achievementCommand, "実績一覧を表示します。", "achievement [page|gui]");
@@ -94,5 +97,10 @@ public final class AchievementModule implements ExtraModule {
 
     public AchievementService getAchievementService() {
         return achievementService;
+    }
+
+    /** Opens the same GUI {@code /ol achievement gui} does - see {@link rpg.extra.api.AchievementApi}. */
+    public void openGui(Player player) {
+        guiManager.open(player, guiScreen.build(player));
     }
 }

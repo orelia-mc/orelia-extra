@@ -25,7 +25,7 @@ All 12 modules are implemented, each as an `ExtraModule` registered in `OreliaEx
 - **Pet** (`/ol pet`) — config-driven follower pets (unlock/summon/dismiss; `/ol pet gui` opens a GUI to buy/summon too)
 - **Mount** (`/ol mount`) — config-driven rideable mounts (unlock/summon/dismiss)
 - **Ranking** (`/ol ranking`) — level leaderboard GUI, reads orelia-core's `StatusApi` directly
-- **Achievement** (`/ol achievement [page]` for the chat listing, `/ol achievement gui` for a GUI) — config-driven achievements (level/quest/money conditions), rewards via `SkillApi`. Each achievement can be grouped into a free-form genre via `achievements.yml`'s `category:`; the GUI is a 2-step drill-down (pick a category, then a paginated list of that category's achievements, 7 per page).
+- **Achievement** (`/ol achievement [page]` for the chat listing, `/ol achievement gui` for a GUI) — config-driven achievements (level/quest/money conditions), rewards via `SkillApi`. Each achievement can be grouped into a free-form genre via `achievements.yml`'s `category:`; the GUI is a 2-step drill-down (pick a category, then a paginated list of that category's achievements, 7 per page). Publishes `rpg.extra.api.AchievementApi` (`openGui(Player)`) via `ServicesManager` - orelia-world's player-info menu (nether star) "実績" icon opens the GUI directly through this API instead of relaying through a command.
 
 ## Setup
 

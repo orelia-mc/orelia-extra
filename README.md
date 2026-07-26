@@ -25,7 +25,7 @@ Orelia は 3 プラグイン構成です。
 - **Pet**(`/ol pet`) — 設定駆動の追従ペット(unlock/summon/dismiss、`/ol pet gui`でGUI一覧から購入・召喚も可)
 - **Mount**(`/ol mount`) — 設定駆動の騎乗マウント(unlock/summon/dismiss)
 - **Ranking**(`/ol ranking`) — レベルランキング GUI(orelia-core の `StatusApi` を直接参照)
-- **Achievement**(`/ol achievement [page]`はチャット表示、`/ol achievement gui`はGUI表示) — 設定駆動の実績(レベル/クエスト/所持金条件、報酬は `SkillApi` 経由)。各実績は`achievements.yml`の`category:`で任意のジャンルに分類でき、GUIはジャンル選択画面→各ジャンルの実績一覧(7件ごとにページ送り)という2段階構成です。
+- **Achievement**(`/ol achievement [page]`はチャット表示、`/ol achievement gui`はGUI表示) — 設定駆動の実績(レベル/クエスト/所持金条件、報酬は `SkillApi` 経由)。各実績は`achievements.yml`の`category:`で任意のジャンルに分類でき、GUIはジャンル選択画面→各ジャンルの実績一覧(7件ごとにページ送り)という2段階構成です。`rpg.extra.api.AchievementApi`(`openGui(Player)`)を`ServicesManager`経由で公開しており、orelia-worldのプレイヤー情報メニュー(ネザースター)の「実績」アイコンはこのAPIでコマンドを経由せず直接GUIを開きます。
 
 ## Setup
 
