@@ -14,15 +14,17 @@ public final class AchievementDefinition {
     private final String id;
     private final String name;
     private final String description;
+    private final String category;
     private final ConditionType conditionType;
     private final String conditionValue;
     private final int rewardSkillPoints;
 
-    public AchievementDefinition(String id, String name, String description, ConditionType conditionType,
+    public AchievementDefinition(String id, String name, String description, String category, ConditionType conditionType,
                                   String conditionValue, int rewardSkillPoints) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.category = category;
         this.conditionType = conditionType;
         this.conditionValue = conditionValue;
         this.rewardSkillPoints = rewardSkillPoints;
@@ -38,6 +40,11 @@ public final class AchievementDefinition {
 
     public String getDescription() {
         return description;
+    }
+
+    /** Free-form grouping label from {@code achievements.yml}'s {@code category:} key (e.g. "レベル", "所持金") - used by the achievement GUI to group entries. */
+    public String getCategory() {
+        return category;
     }
 
     public ConditionType getConditionType() {

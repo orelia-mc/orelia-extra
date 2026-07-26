@@ -7,12 +7,14 @@ import rpg.api.StatusApi;
 import rpg.core.command.CommandAliasUtil;
 import rpg.database.manager.DatabaseManager;
 import rpg.extra.achievement.command.AchievementCommand;
+import rpg.extra.achievement.gui.AchievementGuiScreen;
 import rpg.extra.achievement.listener.AchievementJoinListener;
 import rpg.extra.achievement.repository.AchievementConfigRepository;
 import rpg.extra.achievement.repository.AchievementProgressRepository;
 import rpg.extra.achievement.service.AchievementService;
 import rpg.extra.core.OreliaExtraPlugin;
 import rpg.extra.core.module.ExtraModule;
+import rpg.gui.framework.GuiManager;
 import rpg.world.api.QuestApi;
 
 import java.util.logging.Level;
@@ -65,10 +67,12 @@ public final class AchievementModule implements ExtraModule {
                 questApi, plugin.getMessageManager());
         achievementService.loadAll();
 
+        GuiManager guiManager = new GuiManager();
+        AchievementGuiScreen guiScreen = new AchievementGuiScreen(achievementService, guiManager);
         plugin.getServer().getPluginManager().registerEvents(new AchievementJoinListener(achievementService), plugin);
-        AchievementCommand achievementCommand = new AchievementCommand(achievementService, plugin.getMessageManager());
-        plugin.getPlayerCommandRegistry().register("achievement", achievementCommand, "実績一覧を表示します。", "achievement [page]");
-        CommandAliasUtil.registerAlias(plugin, "achievement", achievementCommand, "実績一覧を表示します。", "[page]");
+        AchievementCommand achievementCommand = new AchievementCommand(achievementService, guiScreen, guiManager, plugin.getMessageManager());
+        plugin.getPlayerCommandRegistry().register("achievement", achievementCommand, "実績一覧を表示します。", "achievement [page|gui]");
+        CommandAliasUtil.registerAlias(plugin, "achievement", achievementCommand, "実績一覧を表示します。", "[page|gui]");
 
         plugin.getSchedulerService().runTimer(achievementService::checkAll, CHECK_PERIOD_TICKS, CHECK_PERIOD_TICKS);
     }

@@ -35,6 +35,7 @@ public final class AchievementConfigRepository {
                 id,
                 section.getString("name", id),
                 section.getString("description", ""),
+                section.getString("category", "その他"),
                 AchievementDefinition.ConditionType.valueOf(section.getString("condition-type", "REACH_LEVEL").trim().toUpperCase()),
                 section.getString("condition-value", "0"),
                 section.getInt("reward-skill-points", 0));
