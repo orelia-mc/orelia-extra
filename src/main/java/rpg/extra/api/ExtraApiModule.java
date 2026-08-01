@@ -42,7 +42,7 @@ public final class ExtraApiModule implements ExtraModule {
         plugin.getServer().getServicesManager().register(
                 ExtraDebugApi.class,
                 new ExtraDebugApiImpl(plugin.getConfigManager(), auctionModule, mailModule, rankingModule,
-                        petModule, mountModule, housingModule, tradeModule),
+                        petModule, mountModule, housingModule, tradeModule, achievementModule),
                 plugin, ServicePriority.Normal);
         plugin.getServer().getServicesManager().register(
                 GuildApi.class, new GuildApiImpl(guildModule.getGuildService()), plugin, ServicePriority.Normal);
