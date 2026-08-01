@@ -3,6 +3,7 @@ package rpg.extra.api;
 import org.bukkit.entity.Player;
 import rpg.core.config.ConfigFile;
 import rpg.core.config.ConfigManager;
+import rpg.extra.achievement.AchievementModule;
 import rpg.extra.auction.AuctionModule;
 import rpg.extra.housing.HousingModule;
 import rpg.extra.housing.service.HousingService;
@@ -31,11 +32,12 @@ final class ExtraDebugApiImpl implements ExtraDebugApi {
     private final MountModule mountModule;
     private final HousingModule housingModule;
     private final TradeModule tradeModule;
+    private final AchievementModule achievementModule;
     private final GuiManager guiManager = new GuiManager();
 
     ExtraDebugApiImpl(ConfigManager configManager, AuctionModule auctionModule, MailModule mailModule,
                        RankingModule rankingModule, PetModule petModule, MountModule mountModule,
-                       HousingModule housingModule, TradeModule tradeModule) {
+                       HousingModule housingModule, TradeModule tradeModule, AchievementModule achievementModule) {
         this.configManager = configManager;
         this.auctionModule = auctionModule;
         this.mailModule = mailModule;
@@ -44,6 +46,7 @@ final class ExtraDebugApiImpl implements ExtraDebugApi {
         this.mountModule = mountModule;
         this.housingModule = housingModule;
         this.tradeModule = tradeModule;
+        this.achievementModule = achievementModule;
     }
 
     @Override
@@ -111,6 +114,11 @@ final class ExtraDebugApiImpl implements ExtraDebugApi {
     @Override
     public void openHouse(Player player) {
         guiManager.open(player, housingModule.getGuiScreen().build(player));
+    }
+
+    @Override
+    public void openAchievement(Player player) {
+        achievementModule.openGui(player);
     }
 
     @Override

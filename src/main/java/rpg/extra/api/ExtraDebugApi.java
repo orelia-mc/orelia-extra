@@ -35,6 +35,8 @@ public interface ExtraDebugApi {
 
     void openHouse(Player player);
 
+    void openAchievement(Player player);
+
     Set<String> listPetIds();
 
     Set<String> getUnlockedPets(UUID playerId);
