@@ -37,10 +37,12 @@ public final class ChatModule implements ExtraModule {
         this.channelService = new ChatChannelService(partyModule.getPartyService(), guildModule.getGuildService());
 
         plugin.getServer().getPluginManager().registerEvents(
-                new ChatChannelListener(channelService, partyModule.getPartyService(), guildModule.getGuildService(), plugin.getMessageManager()),
+                new ChatChannelListener(channelService, partyModule.getPartyService(), guildModule.getGuildService(),
+                        plugin.getMessageManager(), plugin.getChatMuteService()),
                 plugin);
 
-        ChatChannelCommand chatChannelCommand = new ChatChannelCommand(channelService, plugin.getMessageManager());
+        ChatChannelCommand chatChannelCommand =
+                new ChatChannelCommand(channelService, plugin.getChatMuteService(), plugin.getMessageManager());
         String description = "チャットチャンネルを切り替えます。";
         String usage = "chat <public|party|guild|admin>";
         plugin.getPlayerCommandRegistry().register("chat", chatChannelCommand, description, usage);

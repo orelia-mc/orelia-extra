@@ -2,7 +2,7 @@
 # rpg.core.message.MessageManager (reused from orelia-core), keyed by the dotted paths
 # below - do not hardcode ChatColor + literal strings in command/listener/service code,
 # add a key here instead.
-config-version: 5
+config-version: 6
 
 prefix: "&%8[&%6Orelia&%8] &r"
 
@@ -274,11 +274,21 @@ chat:
   not-in-guild: "&%cギルドに所属していません。"
   reverted-party: "&%cパーティーに所属していないため、パブリックチャットに戻しました。"
   reverted-guild: "&%cギルドに所属していないため、パブリックチャットに戻しました。"
-  party-format: "&%9[パーティー] &%f{sender}&%7: &%f{message}"
-  guild-format: "&%a[ギルド] &%f{sender}&%7: &%f{message}"
+  # ChatBadge's icon (see rpg.extra.chat.model.ChatBadge) now carries the category marker for
+  # party/guild lines, replacing the old "[パーティー]"/"[ギルド]" text prefix - don't re-add a
+  # bracket label here or the category would show twice.
+  party-format: "&%f{sender}&%7: &%f{message}"
+  guild-format: "&%f{sender}&%7: &%f{message}"
   admin-format: "&%c[管理者] &%f{sender}&%7: &%f{message}"
   msg-usage: "&%e使い方: /msg &%7<&%eplayer&%7>&%e &%7<&%emessage&%7>&%e"
   msg-sent: "&%d[あなた -> {player}]&%7: &%f{message}"
+  mute-usage: "&%e使い方: /chat mute &%7<&%ecombat&%7|&%esystem&%7|&%eparty&%7|&%eguild&%7>&%e"
+  mute-invalid-category: "&%c不明なカテゴリです: {category}"
+  mute-on: "&%c{category}のチャット通知をミュートしました。"
+  mute-off: "&%a{category}のチャット通知のミュートを解除しました。"
+  mute-status-header: "&%7現在ミュート中のカテゴリ:"
+  mute-status-empty: "&%7ミュート中のカテゴリはありません。"
+  mute-status-entry: "&%7- &%f{category}"
   msg-received: "&%d[{player} -> あなた]&%7: &%f{message}"
 
 admin:

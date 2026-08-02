@@ -47,7 +47,7 @@ public final class GuildModule implements ExtraModule {
 
         plugin.getServer().getPluginManager().registerEvents(new GuildQuitListener(manager), plugin);
         plugin.getServer().getPluginManager().registerEvents(new NpcGuildInteractListener(guildService, plugin.getMessageManager()), plugin);
-        GuildCommand guildCommand = new GuildCommand(guildService, plugin.getMessageManager());
+        GuildCommand guildCommand = new GuildCommand(guildService, plugin.getMessageManager(), plugin.getChatMuteService());
         String description = "ギルドを管理します。";
         String usage = "guild <create|invite|accept|leave|kick|promote|demote|disband|transfer|list|info|chat <message>>";
         plugin.getPlayerCommandRegistry().register("guild", guildCommand, description, usage);

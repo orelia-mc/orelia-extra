@@ -12,6 +12,9 @@ import org.bukkit.entity.Player;
 import rpg.core.command.TabCompletions;
 import rpg.core.message.MessageManager;
 import rpg.extra.chat.ChatBroadcast;
+import rpg.extra.chat.PlayerNameHover;
+import rpg.extra.chat.model.ChatBadge;
+import rpg.extra.chat.service.ChatMuteService;
 import rpg.extra.party.model.Party;
 import rpg.extra.party.service.PartyService;
 import rpg.util.ColorUtil;
@@ -32,10 +35,12 @@ public final class PartyCommand implements CommandExecutor, TabCompleter {
 
     private final PartyService partyService;
     private final MessageManager messages;
+    private final ChatMuteService muteService;
 
-    public PartyCommand(PartyService partyService, MessageManager messages) {
+    public PartyCommand(PartyService partyService, MessageManager messages, ChatMuteService muteService) {
         this.partyService = partyService;
         this.messages = messages;
+        this.muteService = muteService;
     }
 
     @Override
@@ -188,8 +193,8 @@ public final class PartyCommand implements CommandExecutor, TabCompleter {
             return;
         }
         String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-        ChatBroadcast.toParty(party, ColorUtil.component(
-                messages.format("chat.party-format", "sender", player.getName(), "message", message)));
+        ChatBroadcast.toParty(party, PlayerNameHover.formatLine(messages, "chat.party-format", player, message),
+                ChatBadge.PARTY, muteService);
     }
 
     private void listMembers(CommandSender sender, Player player) {

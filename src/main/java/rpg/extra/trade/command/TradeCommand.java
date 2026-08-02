@@ -1,5 +1,6 @@
 package rpg.extra.trade.command;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,6 +12,8 @@ import rpg.core.command.TabCompletions;
 import rpg.core.message.MessageManager;
 import rpg.extra.trade.model.TradeSession;
 import rpg.extra.trade.service.TradeService;
+import rpg.extra.util.ItemDisplayNames;
+import rpg.util.ColorUtil;
 import rpg.util.MoneyFormat;
 
 import java.util.ArrayList;
@@ -160,12 +163,31 @@ public final class TradeCommand implements CommandExecutor, TabCompleter {
             messages.send(sender, "trade.offer-empty");
         }
         for (int i = 0; i < items.size(); i++) {
-            ItemStack item = items.get(i);
-            messages.sendRaw(sender, "trade.offer-entry", "index", i, "type", item.getType(), "amount", item.getAmount());
+            sender.sendMessage(offerEntryComponent(i, items.get(i)));
         }
         if (offer.getMoney() > 0) {
             messages.send(sender, "trade.offer-money", "money", MoneyFormat.format(offer.getMoney()));
         }
+    }
+
+    /**
+     * Builds {@code trade.offer-entry} as a Component instead of going through
+     * {@link MessageManager#sendRaw} - the item-name portion needs a {@code HoverEvent.showItem}
+     * (vanilla's own {@code [Item]} tooltip) attached, which the string-only formatter can't do.
+     */
+    private Component offerEntryComponent(int index, ItemStack item) {
+        String template = messages.raw("trade.offer-entry")
+                .replace("{index}", String.valueOf(index))
+                .replace("{amount}", String.valueOf(item.getAmount()));
+        int typeStart = template.indexOf("{type}");
+        if (typeStart < 0) {
+            return ColorUtil.component(template);
+        }
+        String before = template.substring(0, typeStart);
+        String after = template.substring(typeStart + "{type}".length());
+        return ColorUtil.component(before)
+                .append(ColorUtil.componentWithItemHover(ItemDisplayNames.of(item), item))
+                .append(ColorUtil.component(after));
     }
 
     private void report(CommandSender sender, TradeService.ActionResult result) {
