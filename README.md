@@ -20,7 +20,7 @@ Orelia は 3 プラグイン構成です。
 - **Chat**(`/ol chat`、トップレベル `/chat` エイリアス) — パブリック(デフォルト)/パーティー/ギルド/管理者の4チャンネルを切り替えるチャットチャンネル機能。`/oladmin chat <message>`・`/ol party chat <message>`・`/ol guild chat <message>` は現在の選択チャンネルを変えずに一度だけ送信する。`/ol msg <player> <message>`(トップレベル`/msg`エイリアス)は選択中チャンネルを変えずに1対1の個人メッセージを送る
 - **Trade**(`/ol trade`) — confirm/confirm ハンドシェイクによる 2 人間アイテム取引
 - **Mail**(`/ol mail`) — アイテム添付・GUI 受信箱付きの DB 永続化メールボックス。`/ol mail send <player> <subject...>`でプレイヤー間送信(オンライン限定・テキストのみ)、`/ol mail delete <index>`またはGUIでShift+クリックで削除。受信箱は55件を超えるとページ送り(`GuiPaginator`)になり、ログイン時に未読があればクリックで`/ol mail`を開けるチャット通知が届く。既読かつ添付を受け取り済み(または添付なし)のメールは`config.yml`の`mail.retention-days`(既定30日)を過ぎると自動削除される
-- **Auction**(`/ol auction`) — 期限付き出品のプレイヤー主導オークションハウス(決済は Vault)
+- **Auction**(`/ol auction`) — 期限付き出品のプレイヤー主導オークションハウス(決済は Vault)。落札時に`config.yml`の`auction.fee-rate`(既定5%)を手数料として差し引き、出品者への振込額はその残額になる。1人あたりの同時出品数は`auction.max-listings-per-seller`(既定10件)まで、出品期間の既定値は`auction.default-duration-hours`(既定72時間)。出品が55件を超えるとGUIはページ送りになり、期限切れ時は購入時と同様にメールで出品者へ通知される
 - **Housing**(`/ol house`) — 設定駆動の購入可能な住居プロット(`/ol house home` でテレポート、`/ol house gui`でGUI一覧から購入・帰宅も可)
 - **Pet**(`/ol pet`) — 設定駆動の追従ペット(unlock/summon/dismiss、`/ol pet gui`でGUI一覧から購入・召喚も可)
 - **Mount**(`/ol mount`) — 設定駆動の騎乗マウント(unlock/summon/dismiss)
