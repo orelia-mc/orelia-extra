@@ -19,7 +19,7 @@ All 12 modules are implemented, each as an `ExtraModule` registered in `OreliaEx
 - **Guild** (`/ol guild`) — DB-persisted guilds with leader/officer/member roles (list/transfer/chat). Invites are clickable and run `/guild accept`; joins/leaves/kicks/disbands are announced to every member
 - **Chat** (`/ol chat`, also aliased to top-level `/chat`) — switch between four chat channels: public (default)/party/guild/admin. `/oladmin chat <message>`/`/ol party chat <message>`/`/ol guild chat <message>` send a one-off message without changing the sender's selected channel. `/ol msg <player> <message>` (also aliased to top-level `/msg`) sends a one-to-one private message without changing the selected channel
 - **Trade** (`/ol trade`) — two-player item trading with a confirm/confirm handshake
-- **Mail** (`/ol mail`) — DB-persisted mailbox with item attachments, GUI inbox
+- **Mail** (`/ol mail`) — DB-persisted mailbox with item attachments, GUI inbox. `/ol mail send <player> <subject...>` sends player-to-player mail (online-only, text-only), `/ol mail delete <index>` or a shift-click in the GUI removes an entry. The inbox pages past 54 entries (`GuiPaginator`) and a clickable join-time notice (opens `/ol mail`) fires when there's unread mail. Read mail with attachments already claimed (or none at all) auto-deletes after `config.yml`'s `mail.retention-days` (default 30)
 - **Auction** (`/ol auction`) — player-run auction house with timed listings, settles via Vault
 - **Housing** (`/ol house`) — config-driven purchasable house plots with `/ol house home` teleport (`/ol house gui` opens a GUI to buy/go home too)
 - **Pet** (`/ol pet`) — config-driven follower pets (unlock/summon/dismiss; `/ol pet gui` opens a GUI to buy/summon too)

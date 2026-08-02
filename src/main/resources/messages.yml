@@ -2,7 +2,7 @@
 # rpg.core.message.MessageManager (reused from orelia-core), keyed by the dotted paths
 # below - do not hardcode ChatColor + literal strings in command/listener/service code,
 # add a key here instead.
-config-version: 1
+config-version: 2
 
 prefix: "&%8[&%6Orelia&%8] &r"
 
@@ -36,6 +36,8 @@ usage:
   mount: "&%e使い方: /ol mount [list&%7|&%ebuy &%7<&%eid&%7>&%e&%7|&%esummon [id]&%7|&%edismiss]"
   mount-buy: "&%e使い方: /ol mount buy &%7<&%eid&%7>&%e"
   mount-summon: "&%e使い方: /ol mount summon &%7<&%eid&%7>&%e"
+  mail-send: "&%e使い方: /mail send &%7<&%eplayer&%7>&%e &%7<&%esubject...&%7>&%e"
+  mail-delete: "&%e使い方: /mail delete &%7<&%eindex&%7>&%e"
 
 party:
   created: "&%aパーティーを作成しました。"
@@ -158,10 +160,14 @@ trade:
   cancelled-by-quit: "&%c{player}が切断したため取引はキャンセルされました。"
 
 mail:
-  unread-count: "&%e未読メール: {count}件"
+  unread-count: "&%e未読メール: {count}件 (クリックで開く)"
   no-mail: "&%7受信メールがありません。"
   claimed: "&%a添付物を受け取りました。"
   claim-failed: "&%c受け取りに失敗しました。"
+  sent: "&%a{player}にメールを送信しました。"
+  send-failed-inbox-full: "&%c{player}の受信箱が上限に達しているため送信できません。"
+  deleted: "&%aメールを削除しました。"
+  delete-failed: "&%c削除に失敗しました。"
 
 auction:
   listed: "&%a手に持っているアイテムを出品しました。"
