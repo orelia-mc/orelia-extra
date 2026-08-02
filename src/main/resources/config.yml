@@ -7,10 +7,19 @@
 # config-version tracks this file's schema. Bump it whenever a new top-level section is
 # added - on next startup, ConfigManager appends the new section (with its comments) to any
 # existing config.yml that's missing it, without touching anything you've already customized.
-config-version: 1
+config-version: 2
 
 party:
   max-size: 6
 
 friend:
   max-friends: 50
+
+mail:
+  # A player's send-from-player mail is rejected once their inbox holds this many messages
+  # (system mail like auction sale notices bypasses this limit).
+  max-retained-per-player: 100
+  # Read mail with no unclaimed attachments older than this many days is auto-deleted.
+  retention-days: 30
+  # How often (in ticks) the auto-delete sweep runs. 72000 ticks = 1 hour.
+  purge-check-period-ticks: 72000
