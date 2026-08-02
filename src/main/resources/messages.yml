@@ -2,7 +2,7 @@
 # rpg.core.message.MessageManager (reused from orelia-core), keyed by the dotted paths
 # below - do not hardcode ChatColor + literal strings in command/listener/service code,
 # add a key here instead.
-config-version: 2
+config-version: 3
 
 prefix: "&%8[&%6Orelia&%8] &r"
 
@@ -181,7 +181,9 @@ auction:
   collected: "&%a{count}件の未売却アイテムを回収しました。"
   no-listings: "&%7出品がありません。"
   sold-mail-subject: "{item}が売れました"
-  sold-mail-body: "&%f{item} &%7が &%e{price}G &%7で売れました（購入者: {buyer}）。代金は既にあなたの所持金へ振り込まれています。"
+  sold-mail-body: "&%f{item} &%7が &%e{price}G &%7で売れました（購入者: {buyer}）。手数料 &%c{fee}G &%7を差し引いた &%a{net}G &%7が所持金へ振り込まれています。"
+  expired-mail-subject: "{item}の出品期限が切れました"
+  expired-mail-body: "&%f{item} &%7の出品期間が終了しました。&%eオークション画面から回収してください。"
   reason:
     not-found: "出品が見つかりません"
     already-resolved: "既に処理済みです"
@@ -191,6 +193,7 @@ auction:
     invalid-price: "価格が不正です"
     empty-hand: "手に何も持っていません"
     inventory-full: "インベントリに空きがありません"
+    max-listings-reached: "出品数の上限に達しています"
 
 housing:
   no-plots-available: "&%e購入可能な土地はありません。"

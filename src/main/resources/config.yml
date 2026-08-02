@@ -7,7 +7,7 @@
 # config-version tracks this file's schema. Bump it whenever a new top-level section is
 # added - on next startup, ConfigManager appends the new section (with its comments) to any
 # existing config.yml that's missing it, without touching anything you've already customized.
-config-version: 2
+config-version: 3
 
 party:
   max-size: 6
@@ -23,3 +23,13 @@ mail:
   retention-days: 30
   # How often (in ticks) the auto-delete sweep runs. 72000 ticks = 1 hour.
   purge-check-period-ticks: 72000
+
+auction:
+  # Fraction of the sale price deducted as a fee on a successful purchase (0.05 = 5%),
+  # deposited to nobody - a straightforward money sink.
+  fee-rate: 0.05
+  # A seller can't have more than this many ACTIVE or not-yet-collected EXPIRED listings
+  # occupying a slot at once.
+  max-listings-per-seller: 10
+  # Default listing duration for /ol auction sell.
+  default-duration-hours: 72
