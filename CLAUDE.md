@@ -56,7 +56,7 @@ Config-driven modules each read their own file under `src/main/resources/`: `con
 
 ### Database
 
-DB-backed modules (Guild, Trade sessions, Mail, Auction, Housing ownership, Pet/Mount ownership, Achievement progress) each get orelia-core's shared `DatabaseManager` via `plugin.getServer().getServicesManager().load(DatabaseManager.class)` in their own `onEnable`, then create/migrate their own tables through a `SchemaOwner` repository — orelia-extra owns no schema centrally, same convention as orelia-core/orelia-world.
+DB-backed modules (Guild, Mail, Auction, Housing ownership, Pet/Mount ownership, Achievement progress) each get orelia-core's shared `DatabaseManager` via `plugin.getServer().getServicesManager().load(DatabaseManager.class)` in their own `onEnable`, then create/migrate their own tables through a `SchemaOwner` repository — orelia-extra owns no schema centrally, same convention as orelia-core/orelia-world. Trade is a partial exception: an in-progress `TradeSession` itself is still in-memory only (a restart drops any open trade, returning items via the normal player-data save since they never left inventories on disk) — only the append-only audit log of *completed* trades (`trade_log`, `TradeLogRepository`) is DB-backed.
 
 ### Cross-module and cross-plugin dependencies
 

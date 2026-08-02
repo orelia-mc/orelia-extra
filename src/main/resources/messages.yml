@@ -2,7 +2,7 @@
 # rpg.core.message.MessageManager (reused from orelia-core), keyed by the dotted paths
 # below - do not hardcode ChatColor + literal strings in command/listener/service code,
 # add a key here instead.
-config-version: 3
+config-version: 4
 
 prefix: "&%8[&%6Orelia&%8] &r"
 
@@ -26,6 +26,7 @@ usage:
   guild-target: "&%e使い方: /guild {action} &%7<&%eplayer&%7>&%e"
   trade: "&%e使い方: /trade &%7<&%eplayer&%7>&%e&%7|&%eaccept&%7|&%eadd&%7|&%eremove &%7<&%eindex&%7>&%e&%7|&%econfirm&%7|&%ecancel&%7|&%eview"
   trade-remove: "&%e使い方: /trade remove &%7<&%eindex&%7>&%e"
+  trade-money: "&%e使い方: /trade money &%7<&%eamount&%7>&%e"
   auction-sell: "&%e使い方: /ol auction sell &%7<&%eprice&%7>&%e"
   auction: "&%e使い方: /ol auction [list&%7|&%esell &%7<&%eprice&%7>&%e&%7|&%ecollect]"
   house: "&%e使い方: /ol house [list&%7|&%ebuy &%7<&%eplotId&%7>&%e&%7|&%ehome]"
@@ -158,6 +159,14 @@ trade:
   empty-hand: "&%c手にアイテムを持っていません。"
   invalid-slot: "&%c指定した番号のアイテムはありません。"
   cancelled-by-quit: "&%c{player}が切断したため取引はキャンセルされました。"
+  request-timed-out: "&%c取引の申し込みが時間切れになりました。"
+  session-timed-out: "&%c取引がタイムアウトしたためキャンセルされました。"
+  insufficient-funds: "&%c所持金が足りないため取引を成立できませんでした。"
+  money-unsupported: "&%cVault Economyが導入されていないため金額は提示できません。"
+  invalid-amount: "&%c金額は0以上で指定してください。"
+  too-many-items: "&%c提示できるアイテム数の上限に達しています。"
+  money-set: "&%a提示金額を{money}に設定しました。"
+  offer-money: "&%7提示金額: &%6{money}"
 
 mail:
   unread-count: "&%e未読メール: {count}件 (クリックで開く)"
