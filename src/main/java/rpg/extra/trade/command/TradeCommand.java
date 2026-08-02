@@ -52,14 +52,26 @@ public final class TradeCommand implements CommandExecutor, TabCompleter {
                     report(sender, result);
                 }
             }
-            case "add" -> report(sender, tradeService.addHeldItem(player));
+            case "add" -> {
+                TradeService.ActionResult result = tradeService.addHeldItem(player);
+                if (result == TradeService.ActionResult.OK) {
+                    messages.send(player, "trade.item-added");
+                } else {
+                    report(sender, result);
+                }
+            }
             case "remove" -> {
                 if (args.length < 2) {
                     messages.send(sender, "usage.trade-remove");
                     return true;
                 }
                 try {
-                    report(sender, tradeService.removeOfferedItem(player, Integer.parseInt(args[1])));
+                    TradeService.ActionResult result = tradeService.removeOfferedItem(player, Integer.parseInt(args[1]));
+                    if (result == TradeService.ActionResult.OK) {
+                        messages.send(player, "trade.item-removed");
+                    } else {
+                        report(sender, result);
+                    }
                 } catch (NumberFormatException e) {
                     messages.send(sender, "trade.invalid-number");
                 }
@@ -91,7 +103,14 @@ public final class TradeCommand implements CommandExecutor, TabCompleter {
                     report(sender, result);
                 }
             }
-            case "cancel" -> report(sender, tradeService.cancel(player));
+            case "cancel" -> {
+                TradeService.ActionResult result = tradeService.cancel(player);
+                if (result == TradeService.ActionResult.OK) {
+                    messages.send(player, "trade.cancelled");
+                } else {
+                    report(sender, result);
+                }
+            }
             case "view" -> showOffers(sender, player);
             default -> {
                 Player target = Bukkit.getPlayerExact(args[0]);
@@ -100,9 +119,11 @@ public final class TradeCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 TradeService.ActionResult result = tradeService.request(player, target);
-                report(sender, result);
                 if (result == TradeService.ActionResult.OK) {
+                    messages.send(player, "trade.request-sent", "player", target.getName());
                     messages.send(target, "trade.request-received", "player", player.getName());
+                } else {
+                    report(sender, result);
                 }
             }
         }
