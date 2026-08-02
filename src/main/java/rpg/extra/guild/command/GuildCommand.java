@@ -12,6 +12,9 @@ import rpg.core.command.TabCompletions;
 import rpg.core.message.MessageManager;
 import rpg.util.ColorUtil;
 import rpg.extra.chat.ChatBroadcast;
+import rpg.extra.chat.PlayerNameHover;
+import rpg.extra.chat.model.ChatBadge;
+import rpg.extra.chat.service.ChatMuteService;
 import rpg.extra.guild.model.Guild;
 import rpg.extra.guild.model.GuildRole;
 import rpg.extra.guild.service.GuildService;
@@ -34,10 +37,12 @@ public final class GuildCommand implements CommandExecutor, TabCompleter {
 
     private final GuildService guildService;
     private final MessageManager messages;
+    private final ChatMuteService muteService;
 
-    public GuildCommand(GuildService guildService, MessageManager messages) {
+    public GuildCommand(GuildService guildService, MessageManager messages, ChatMuteService muteService) {
         this.guildService = guildService;
         this.messages = messages;
+        this.muteService = muteService;
     }
 
     @Override
@@ -188,8 +193,8 @@ public final class GuildCommand implements CommandExecutor, TabCompleter {
             return;
         }
         String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-        ChatBroadcast.toGuild(guild, ColorUtil.component(
-                messages.format("chat.guild-format", "sender", player.getName(), "message", message)));
+        ChatBroadcast.toGuild(guild, PlayerNameHover.formatLine(messages, "chat.guild-format", player, message),
+                ChatBadge.GUILD, muteService);
     }
 
     private void showList(CommandSender sender, String[] args) {

@@ -1,5 +1,6 @@
 package rpg.extra.auction.gui;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import rpg.core.message.MessageManager;
@@ -75,7 +76,7 @@ public final class AuctionGuiScreen {
             } else {
                 AuctionService.ActionResult result = auctionService.buy(clicker, listing.getId());
                 if (result == AuctionService.ActionResult.OK) {
-                    messages.send(clicker, "auction.bought", "item", listing.getDisplayName(), "price", MoneyFormat.format(listing.getPrice()));
+                    sendBoughtMessage(clicker, listing);
                 } else {
                     messages.send(clicker, "auction.buy-failed", "reason", messages.format(result.reasonMessageKey()));
                 }
@@ -85,5 +86,25 @@ public final class AuctionGuiScreen {
             // not just this one icon, so reopen rather than patch a single slot.
             guiManager.open(clicker, build(clicker, page));
         });
+    }
+
+    /**
+     * Builds {@code auction.bought} as a Component instead of going through
+     * {@link MessageManager#send} - the item-name portion needs a {@code HoverEvent.showItem}
+     * (vanilla's own {@code [Item]} tooltip) attached, which the string-only formatter can't do.
+     */
+    private void sendBoughtMessage(Player clicker, AuctionListing listing) {
+        String template = messages.raw("auction.bought").replace("{price}", MoneyFormat.format(listing.getPrice()));
+        Component prefix = ColorUtil.component(messages.getPrefix());
+        int itemStart = template.indexOf("{item}");
+        if (itemStart < 0) {
+            clicker.sendMessage(prefix.append(ColorUtil.component(template)));
+            return;
+        }
+        String before = template.substring(0, itemStart);
+        String after = template.substring(itemStart + "{item}".length());
+        clicker.sendMessage(prefix.append(ColorUtil.component(before))
+                .append(ColorUtil.componentWithItemHover(listing.getDisplayName(), listing.getItem()))
+                .append(ColorUtil.component(after)));
     }
 }

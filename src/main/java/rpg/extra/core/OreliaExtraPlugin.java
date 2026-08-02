@@ -12,6 +12,7 @@ import rpg.extra.achievement.AchievementModule;
 import rpg.extra.api.ExtraApiModule;
 import rpg.extra.auction.AuctionModule;
 import rpg.extra.chat.ChatModule;
+import rpg.extra.chat.service.ChatMuteService;
 import rpg.extra.core.command.ExtraAdminCommand;
 import rpg.extra.core.module.ExtraModuleManager;
 import rpg.extra.friend.FriendModule;
@@ -43,6 +44,7 @@ public final class OreliaExtraPlugin extends JavaPlugin {
     private PlayerCommandRegistry playerCommandRegistry;
     private AdminCommandRegistry adminCommandRegistry;
     private ExtraModuleManager moduleManager;
+    private ChatMuteService chatMuteService;
 
     @Override
     public void onEnable() {
@@ -75,6 +77,11 @@ public final class OreliaExtraPlugin extends JavaPlugin {
 
         this.schedulerService = new SchedulerService(this);
         this.moduleManager = new ExtraModuleManager(this);
+        // Built here (not inside ChatModule) so PartyModule/GuildModule - registered before
+        // ChatModule since ChatModule needs their services already built - can reach it too;
+        // ChatMuteService itself has no dependency on any module, so there's no ordering issue
+        // giving every module the same shared instance from the start.
+        this.chatMuteService = new ChatMuteService();
 
         adminCommandRegistry.register("extrareload", new ExtraAdminCommand(this),
                 "orelia-extra の設定を再読み込みします。", "extrareload");
@@ -133,5 +140,9 @@ public final class OreliaExtraPlugin extends JavaPlugin {
 
     public AdminCommandRegistry getAdminCommandRegistry() {
         return adminCommandRegistry;
+    }
+
+    public ChatMuteService getChatMuteService() {
+        return chatMuteService;
     }
 }

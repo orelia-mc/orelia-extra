@@ -57,7 +57,9 @@ public final class MailModule implements ExtraModule {
                 "郵便受けを開きます。", "[unread|send <player> <subject...>|delete <index>]");
 
         plugin.getServer().getPluginManager().registerEvents(
-                new MailUnreadJoinListener(mailService, plugin.getMessageManager(), plugin.getSchedulerService()), plugin);
+                new MailUnreadJoinListener(mailService, plugin.getMessageManager(), plugin.getSchedulerService(),
+                        mailConfig, plugin.getLogger(), plugin.getChatMuteService()),
+                plugin);
 
         plugin.getSchedulerService().runTimer(mailService::purgeExpired,
                 mailConfig.getPurgeCheckPeriodTicks(), mailConfig.getPurgeCheckPeriodTicks());

@@ -7,7 +7,7 @@
 # config-version tracks this file's schema. Bump it whenever a new top-level section is
 # added - on next startup, ConfigManager appends the new section (with its comments) to any
 # existing config.yml that's missing it, without touching anything you've already customized.
-config-version: 4
+config-version: 5
 
 party:
   max-size: 6
@@ -23,6 +23,14 @@ mail:
   retention-days: 30
   # How often (in ticks) the auto-delete sweep runs. 72000 ticks = 1 hour.
   purge-check-period-ticks: 72000
+  # Plays a sound for the player alongside the join-time unread notice, so it's noticed even
+  # if they're not looking at chat. Invalid sound names just skip the sound (logged as a
+  # warning), same fail-open behavior as other Sound.valueOf-driven config in this suite.
+  notify-sound:
+    enabled: true
+    name: ENTITY_EXPERIENCE_ORB_PICKUP
+    volume: 1.0
+    pitch: 1.0
 
 auction:
   # Fraction of the sale price deducted as a fee on a successful purchase (0.05 = 5%),
