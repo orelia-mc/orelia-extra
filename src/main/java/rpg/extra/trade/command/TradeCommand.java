@@ -11,16 +11,18 @@ import rpg.core.command.TabCompletions;
 import rpg.core.message.MessageManager;
 import rpg.extra.trade.model.TradeSession;
 import rpg.extra.trade.service.TradeService;
+import rpg.util.MoneyFormat;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@code /ol trade <player>|accept|add|remove <index>|confirm|cancel|view} (SOW TradeModule).
+ * {@code /ol trade <player>|accept|add|remove <index>|money <amount>|confirm|cancel|view} (SOW TradeModule).
  */
 public final class TradeCommand implements CommandExecutor, TabCompleter {
 
-    private static final List<String> SUBCOMMANDS = List.of("accept", "add", "remove", "confirm", "cancel", "view");
+    private static final List<String> SUBCOMMANDS =
+            List.of("accept", "add", "remove", "money", "confirm", "cancel", "view");
 
     private final TradeService tradeService;
     private final MessageManager messages;
@@ -62,9 +64,32 @@ public final class TradeCommand implements CommandExecutor, TabCompleter {
                     messages.send(sender, "trade.invalid-number");
                 }
             }
+            case "money" -> {
+                if (args.length < 2) {
+                    messages.send(sender, "usage.trade-money");
+                    return true;
+                }
+                try {
+                    double amount = Double.parseDouble(args[1]);
+                    TradeService.ActionResult result = tradeService.setOfferedMoney(player, amount);
+                    if (result == TradeService.ActionResult.OK) {
+                        messages.send(player, "trade.money-set", "money", MoneyFormat.format(amount));
+                    } else {
+                        report(sender, result);
+                    }
+                } catch (NumberFormatException e) {
+                    messages.send(sender, "trade.invalid-number");
+                }
+            }
             case "confirm" -> {
-                boolean executed = tradeService.confirm(player);
-                messages.send(player, executed ? "trade.confirmed-executed" : "trade.confirmed-waiting");
+                TradeService.ActionResult result = tradeService.confirm(player);
+                if (result == TradeService.ActionResult.OK) {
+                    messages.send(player, "trade.confirmed-executed");
+                } else if (result == TradeService.ActionResult.WAITING_FOR_OTHER) {
+                    messages.send(player, "trade.confirmed-waiting");
+                } else {
+                    report(sender, result);
+                }
             }
             case "cancel" -> report(sender, tradeService.cancel(player));
             case "view" -> showOffers(sender, player);
@@ -103,19 +128,22 @@ public final class TradeCommand implements CommandExecutor, TabCompleter {
             return;
         }
         messages.send(sender, "trade.your-offer-header");
-        printOffer(sender, session.offerOf(player.getUniqueId()).getItems());
+        printOffer(sender, session.offerOf(player.getUniqueId()));
         messages.send(sender, "trade.their-offer-header");
-        printOffer(sender, session.offerOf(session.getOtherPlayer(player.getUniqueId())).getItems());
+        printOffer(sender, session.offerOf(session.getOtherPlayer(player.getUniqueId())));
     }
 
-    private void printOffer(CommandSender sender, java.util.List<ItemStack> items) {
+    private void printOffer(CommandSender sender, rpg.extra.trade.model.TradeOffer offer) {
+        List<ItemStack> items = offer.getItems();
         if (items.isEmpty()) {
             messages.send(sender, "trade.offer-empty");
-            return;
         }
         for (int i = 0; i < items.size(); i++) {
             ItemStack item = items.get(i);
             messages.sendRaw(sender, "trade.offer-entry", "index", i, "type", item.getType(), "amount", item.getAmount());
+        }
+        if (offer.getMoney() > 0) {
+            messages.send(sender, "trade.offer-money", "money", MoneyFormat.format(offer.getMoney()));
         }
     }
 
@@ -131,6 +159,11 @@ public final class TradeCommand implements CommandExecutor, TabCompleter {
             case CANNOT_TARGET_SELF -> "trade.cannot-target-self";
             case EMPTY_HAND -> "trade.empty-hand";
             case INVALID_SLOT -> "trade.invalid-slot";
+            case WAITING_FOR_OTHER -> "trade.confirmed-waiting";
+            case INSUFFICIENT_FUNDS -> "trade.insufficient-funds";
+            case MONEY_UNSUPPORTED -> "trade.money-unsupported";
+            case INVALID_AMOUNT -> "trade.invalid-amount";
+            case TOO_MANY_ITEMS -> "trade.too-many-items";
             case OK -> "command.ok";
         };
         messages.send(sender, key);
